@@ -10,10 +10,14 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 include_directories(Eigen)
+include_directories(src)
 
 add_executable(
         application
         main.cpp
+        src/renderer.cpp
+        src/geometry.cpp
+        src/application.cpp
 )
 
 target_link_libraries(
