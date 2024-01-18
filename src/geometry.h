@@ -1,9 +1,8 @@
 #pragma once
 
 #include <array>
+#include <Eigen/Dense>
 #include <SFML/Graphics.hpp>
-// #include <Eigen/Dense>
-#include "../Eigen/Eigen/Dense"
 
 namespace application {
 
