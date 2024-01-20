@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.13)
 
 project(
-        3D-Render-from-Scratch
-        VERSION 1.0 
-        LANGUAGES CXX
+    3D-Render-from-Scratch
+    VERSION 1.0
+    LANGUAGES CXX
 )
 
 set(CMAKE_CXX_STANDARD 20)
@@ -13,16 +13,19 @@ include_directories(Eigen)
 include_directories(src)
 
 add_executable(
-        application
-        main.cpp
-        src/renderer.cpp
-        src/geometry.cpp
-        src/application.cpp
+    application
+    main.cpp
+    src/application.cpp
+    src/camera.cpp
+    src/geometry.cpp
+    src/object.cpp
+    src/renderer.cpp
+    src/world.cpp
 )
 
 target_link_libraries(
-        application
-        sfml-graphics
-        sfml-window
-        sfml-system
+    application
+    sfml-graphics
+    sfml-window
+    sfml-system
 )

@@ -25,8 +25,8 @@ double interpolateZ(const Point2d& X, const Triangle& triangle) {
 void Renderer::rasterizeTriangle(const Triangle& triangle) {
     double min_x = 1, min_y = 1, max_x = -1, max_y = -1;
     for (const Point3d& point : triangle.points) {
-        assert(-1 <= point.x() && point.x() <= 1 && -1 <= point.y() && point.y() <= 1 &&
-               "Triangle passed in renderer has unscaled coordinates");
+        assert(-1 - EPS <= point.x() && point.x() <= 1 + EPS && -1 - EPS <= point.y() &&
+               point.y() <= 1 + EPS && "Triangle passed in renderer has unscaled coordinates");
         min_x = std::min(min_x, point.x());
         min_y = std::min(min_y, point.y());
 
@@ -53,7 +53,7 @@ void Renderer::rasterizeTriangle(const Triangle& triangle) {
     }
 }
 
-void Renderer::render(sf::RenderWindow& render_window) const {
+void Renderer::renderImage(sf::RenderWindow& render_window) const {
     auto [screen_w, screen_h] = getScreenSize();
     std::vector<sf::Vertex> pixels;
     for (size_t i = 0; i < screen_w; i++) {
@@ -61,7 +61,9 @@ void Renderer::render(sf::RenderWindow& render_window) const {
             sf::Vector2f position{static_cast<float>(i), static_cast<float>(screen_h - j)};
             sf::Color color = pixel_colors_[i][j];
 
-            double shade_coeff = 1 - (z_buffer_[i][j] + 1) / 2;
+            // FIXME
+            // double shade_coeff = 1 - (z_buffer_[i][j] + 1) / 2;
+            double shade_coeff = 1;
             color.r *= shade_coeff;
             color.g *= shade_coeff;
             color.b *= shade_coeff;
