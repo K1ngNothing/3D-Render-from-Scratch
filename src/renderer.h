@@ -11,7 +11,7 @@ public:
     }
 
     void rasterizeTriangle(const Triangle& triangle);
-    void render(sf::RenderWindow& render_window) const;
+    void renderImage(sf::RenderWindow& render_window) const;
     void clear();
 
 private:

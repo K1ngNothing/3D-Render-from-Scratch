@@ -6,3 +6,5 @@ AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 SortIncludes: CaseInsensitive
+InsertNewlineAtEOF: true
+AlignArrayOfStructures: Right

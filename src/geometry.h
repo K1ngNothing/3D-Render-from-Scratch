@@ -10,6 +10,9 @@ constexpr double EPS = 1e-9;
 
 using Point2d = Eigen::Vector2d;
 using Point3d = Eigen::Vector3d;
+using Point4d = Eigen::Vector4d;
+
+using TransformMatrix = Eigen::Matrix4d;
 
 struct Triangle {
     std::array<Point3d, 3> points;
