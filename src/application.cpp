@@ -1,30 +1,28 @@
 #include "application.h"
 
-#include <chrono>
-#include <iostream>
-
 namespace application {
 
 Application::Application()
-    : render_window_(sf::VideoMode(window_w, window_h), window_name),
-      renderer_(window_w, window_h),
-      camera_(near_plane_dist, far_plane_dist, fov_angle, aspect_ratio) {
+    : render_window_(sf::VideoMode(k_window_w_, k_window_h_), window_name),
+      renderer_(k_window_w_, k_window_h_),
+      camera_(static_cast<double>(k_window_w_) / k_window_h_) {
 }
 
 void Application::run() {
     // At the moment produces static image
     updateRenderWindow();
-    displayImage();
+    displayRenderWindow();
     while (render_window_.isOpen()) {
-        checkEvents();
+        handleEvents();
     }
 }
 
-void Application::addObjects(std::vector<Triangle> triangles, Point3d position) {
-    world_.addObjects(std::move(triangles), std::move(position));
+void Application::addObjects(std::vector<Triangle> triangles,
+                             Point3d position) {
+    world_.addObject(std::move(triangles), std::move(position));
 }
 
-void Application::checkEvents() {
+void Application::handleEvents() {
     // At the moment checks only for closing a window
     sf::Event event;
     while (render_window_.pollEvent(event)) {
@@ -36,15 +34,11 @@ void Application::checkEvents() {
 }
 
 void Application::updateRenderWindow() {
-    renderer_.clear();
-    for (Triangle& triangle : world_.getTriangles()) {
-        triangle = camera_.transformTriangle(triangle);
-        renderer_.rasterizeTriangle(triangle);
-    }
-    renderer_.renderImage(render_window_);
+    Image image = renderer_.renderImage(camera_, world_);
+    render_window_.draw(&image[0], image.size(), sf::PrimitiveType::Points);
 }
 
-void Application::displayImage() {
+void Application::displayRenderWindow() {
     render_window_.display();
 }
 

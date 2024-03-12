@@ -1,7 +1,5 @@
 #include "geometry.h"
 
-#include <iostream>
-
 namespace application {
 namespace {
 Point2d get2dPoint(const Point3d& X) {

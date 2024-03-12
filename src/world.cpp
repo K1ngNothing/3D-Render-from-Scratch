@@ -2,7 +2,7 @@
 
 namespace application {
 
-void World::addObjects(std::vector<Triangle> triangles, Point3d position) {
+void World::addObject(std::vector<Triangle> triangles, Point3d position) {
     objects.emplace_back(std::move(triangles), std::move(position));
 }
 

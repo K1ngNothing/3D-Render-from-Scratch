@@ -1,24 +1,34 @@
 #pragma once
+#include "camera.h"
 #include "geometry.h"
+#include "world.h"
 
 namespace application {
+
+using Image = std::vector<sf::Vertex>;
 
 class Renderer {
 public:
     Renderer(size_t screen_w, size_t screen_h)
-        : pixel_colors_(screen_w, std::vector<sf::Color>(screen_h, sf::Color::Black)),
-          z_buffer_(screen_w, std::vector<double>(screen_h, 1)) {
+        : screen_w_(screen_w), screen_h_(screen_h) {
     }
 
-    void rasterizeTriangle(const Triangle& triangle);
-    void renderImage(sf::RenderWindow& render_window) const;
-    void clear();
+    Image renderImage(const Camera& camera, const World& world);
 
 private:
-    std::pair<size_t, size_t> getScreenSize() const;
+    struct Pixel {
+        double depth = 1;
+        sf::Color color = sf::Color::Black;
+    };
+    using ZBuffer = std::vector<std::vector<Pixel>>;
 
-    std::vector<std::vector<sf::Color>> pixel_colors_;
-    std::vector<std::vector<double>> z_buffer_;
+    ZBuffer zBufferAlgorithm(const Camera& camera, const World& world);
+    void rasterizeTriangle(const Triangle& triangle,
+                           Renderer::ZBuffer& z_buffer_);
+    std::vector<sf::Vertex> createImage(const ZBuffer& z_buffer);
+
+    size_t screen_w_;
+    size_t screen_h_;
 };
 
 }  // namespace application
