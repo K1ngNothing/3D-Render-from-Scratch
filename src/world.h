@@ -8,7 +8,7 @@ namespace application {
 
 class World {
 public:
-    void addObject(std::vector<Triangle> triangles, Point3d position);
+    void addObject(const Object& object);
     std::vector<Triangle> getTriangles() const;
 
 private:

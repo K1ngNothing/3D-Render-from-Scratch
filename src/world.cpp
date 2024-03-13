@@ -2,14 +2,14 @@
 
 namespace application {
 
-void World::addObject(std::vector<Triangle> triangles, Point3d position) {
-    objects.emplace_back(std::move(triangles), std::move(position));
+void World::addObject(const Object& object) {
+    objects.push_back(object);
 }
 
 std::vector<Triangle> World::getTriangles() const {
     std::vector<Triangle> triangles;
     for (const Object& obj : objects) {
-        for (Triangle& triangle : obj.getTriangles()) {
+        for (const Triangle& triangle : obj.getTriangles()) {
             triangles.emplace_back(std::move(triangle));
         }
     }

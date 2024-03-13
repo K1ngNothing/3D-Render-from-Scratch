@@ -2,10 +2,11 @@
 
 #include <cassert>
 
+#include "settings.h"
+
 namespace application {
 
-Camera::Camera(double aspect_ratio)
-    : aspect_ratio_(aspect_ratio), transform_mat_(constructTransformMatrix()) {
+Camera::Camera() : transform_mat_(constructTransformMatrix()) {
 }
 
 Point3d Camera::transformPoint(const Point3d& P) const {
@@ -19,8 +20,8 @@ Triangle Camera::transformTriangle(const Triangle& triangle) const {
     Triangle transformed_triangle = triangle;
     for (Point3d& point : transformed_triangle.points) {
         point = transformPoint(point);
-        assert(-1 - EPS <= point.x() && point.x() <= 1 + EPS &&
-               -1 - EPS <= point.y() && point.y() <= 1 + EPS &&
+        assert(-1 - k_eps <= point.x() && point.x() <= 1 + k_eps &&
+               -1 - k_eps <= point.y() && point.y() <= 1 + k_eps &&
                "Transformation failed");
     }
     return transformed_triangle;
@@ -28,13 +29,13 @@ Triangle Camera::transformTriangle(const Triangle& triangle) const {
 
 Eigen::Matrix4d Camera::constructTransformMatrix() {
     // Обозначения и формулы из книги
-    double n = k_near_plane_dist_;
-    double f = k_far_plane_dist_;
-    double e = 1.0 / tan(k_fov_angle_ / 2);
+    double n = settings::k_near_plane_dist;
+    double f = settings::k_far_plane_dist;
+    double e = 1.0 / tan(settings::k_fov_angle / 2);
     double l = -n / e;
     double r = n / e;
-    double b = -aspect_ratio_ * n / e;
-    double t = aspect_ratio_ * n / e;
+    double b = -settings::aspect_ratio * n / e;
+    double t = settings::aspect_ratio * n / e;
     return Eigen::Matrix4d{
         {2 * n / (r - l),               0,  (r + l) / (r - l),                    0},
         {              0, 2 * n / (t - b),  (t + b) / (t - b),                    0},

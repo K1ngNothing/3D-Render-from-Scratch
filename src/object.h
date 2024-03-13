@@ -9,8 +9,9 @@ namespace application {
 class Object {
 public:
     // TODO: support more transformations
-    Object(std::vector<Triangle> triangles, const Point3d& position);
-    std::vector<Triangle> getTriangles() const;
+    Object(std::vector<Triangle> triangles,
+           const Point3d& position = Point3d::Zero());
+    const std::vector<Triangle>& getTriangles() const;
 
 private:
     std::vector<Triangle> triangles_;

@@ -1,6 +1,7 @@
 #pragma once
 #include "camera.h"
 #include "geometry.h"
+#include "settings.h"
 #include "world.h"
 
 namespace application {
@@ -9,10 +10,6 @@ using Image = std::vector<sf::Vertex>;
 
 class Renderer {
 public:
-    Renderer(size_t screen_w, size_t screen_h)
-        : screen_w_(screen_w), screen_h_(screen_h) {
-    }
-
     Image renderImage(const Camera& camera, const World& world);
 
 private:
@@ -27,8 +24,8 @@ private:
                            Renderer::ZBuffer& z_buffer_);
     std::vector<sf::Vertex> createImage(const ZBuffer& z_buffer);
 
-    size_t screen_w_;
-    size_t screen_h_;
+    static constexpr size_t screen_w_ = settings::k_window_w;
+    static constexpr size_t screen_h_ = settings::k_window_h;
 };
 
 }  // namespace application

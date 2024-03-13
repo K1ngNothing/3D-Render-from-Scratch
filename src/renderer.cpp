@@ -40,8 +40,8 @@ void Renderer::rasterizeTriangle(const Triangle& triangle,
                                  Renderer::ZBuffer& z_buffer_) {
     double min_x = 1, min_y = 1, max_x = -1, max_y = -1;
     for (const Point3d& point : triangle.points) {
-        assert(-1 - EPS <= point.x() && point.x() <= 1 + EPS &&
-               -1 - EPS <= point.y() && point.y() <= 1 + EPS &&
+        assert(-1 - k_eps <= point.x() && point.x() <= 1 + k_eps &&
+               -1 - k_eps <= point.y() && point.y() <= 1 + k_eps &&
                "Triangle passed in renderer has unscaled coordinates");
         min_x = std::min(min_x, point.x());
         min_y = std::min(min_y, point.y());
@@ -61,7 +61,7 @@ void Renderer::rasterizeTriangle(const Triangle& triangle,
             double interpolated_z =
                 interpolateZ(Point2d(double_x, double_y), triangle);
             if (isPointInsideTriangle2D({double_x, double_y}, triangle) &&
-                z_buffer_[pixel_x][pixel_y].depth > interpolated_z + EPS) {
+                z_buffer_[pixel_x][pixel_y].depth > interpolated_z + k_eps) {
                 z_buffer_[pixel_x][pixel_y].depth = interpolated_z;
                 z_buffer_[pixel_x][pixel_y].color = triangle.color;
             }

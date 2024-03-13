@@ -1,29 +1,33 @@
 #include "application.h"
 
+#include "settings.h"
+
 namespace application {
 
 Application::Application()
-    : render_window_(sf::VideoMode(k_window_w_, k_window_h_), window_name),
-      renderer_(k_window_w_, k_window_h_),
-      camera_(static_cast<double>(k_window_w_) / k_window_h_) {
+    : render_window_(sf::VideoMode(settings::k_window_w, settings::k_window_h),
+                     settings::window_name) {
+    // some scene for testing
+    Triangle triangle1 = Triangle{
+        Point3d{-2,  4, -4},
+        Point3d{ 6,  3, -8},
+        Point3d{-8, -4, -9},
+        sf::Color::Red
+    };
+    world_.addObject(Object{std::vector<Triangle>{triangle1}});
 }
 
 void Application::run() {
     // At the moment produces static image
-    updateRenderWindow();
-    displayRenderWindow();
+    // Therefore we draw one frame and then waiting for window's closing
+    drawFrame();
     while (render_window_.isOpen()) {
         handleEvents();
     }
 }
 
-void Application::addObjects(std::vector<Triangle> triangles,
-                             Point3d position) {
-    world_.addObject(std::move(triangles), std::move(position));
-}
-
 void Application::handleEvents() {
-    // At the moment checks only for closing a window
+    // At the moment only checks for window's closing
     sf::Event event;
     while (render_window_.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
@@ -33,12 +37,9 @@ void Application::handleEvents() {
     }
 }
 
-void Application::updateRenderWindow() {
+void Application::drawFrame() {
     Image image = renderer_.renderImage(camera_, world_);
     render_window_.draw(&image[0], image.size(), sf::PrimitiveType::Points);
-}
-
-void Application::displayRenderWindow() {
     render_window_.display();
 }
 
