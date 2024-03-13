@@ -32,7 +32,7 @@ void Application::handleEvents() {
     while (render_window_.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
             render_window_.close();
-            exit(0);
+            return;
         }
     }
 }

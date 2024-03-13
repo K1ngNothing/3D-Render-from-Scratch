@@ -24,7 +24,7 @@ bool isPointInsideTriangle2D(const Point2d& X, const Triangle& triangle) {
     double actual_area = calcArea(A, B, C);
     double supposed_area =
         calcArea(X, A, B) + calcArea(X, B, C) + calcArea(X, C, A);
-    return (abs(actual_area - supposed_area) < k_eps);
+    return abs(actual_area - supposed_area) < k_eps;
 }
 
 }  // namespace application
