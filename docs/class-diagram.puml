@@ -1,4 +1,4 @@
-@startuml Class Diagram
+@startuml Class_Diagram
 
 !$s = "<U+0020>"
 !$t = $s + $s + $s + $s
