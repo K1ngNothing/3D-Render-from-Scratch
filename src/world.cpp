@@ -10,7 +10,7 @@ std::vector<Triangle> World::getTriangles() const {
     std::vector<Triangle> triangles;
     for (const Object& obj : objects) {
         for (const Triangle& triangle : obj.getTriangles()) {
-            triangles.emplace_back(std::move(triangle));
+            triangles.push_back(triangle);
         }
     }
     return triangles;

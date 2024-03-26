@@ -10,7 +10,7 @@ class Object {
 public:
     // TODO: support more transformations
     Object(std::vector<Triangle> triangles,
-           const Point3d& position = Point3d::Zero());
+           const Point3& position = Point3::Zero());
     const std::vector<Triangle>& getTriangles() const;
 
 private:

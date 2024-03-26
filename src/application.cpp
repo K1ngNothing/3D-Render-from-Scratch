@@ -9,9 +9,9 @@ Application::Application()
                      settings::window_name) {
     // some scene for testing
     Triangle triangle1 = Triangle{
-        Point3d{-2,  4, -4},
-        Point3d{ 6,  3, -8},
-        Point3d{-8, -4, -9},
+        Point3{-2,  4, -4},
+        Point3{ 6,  3, -8},
+        Point3{-8, -4, -9},
         sf::Color::Red
     };
     world_.addObject(Object{std::vector<Triangle>{triangle1}});

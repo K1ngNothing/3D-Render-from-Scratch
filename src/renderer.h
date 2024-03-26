@@ -6,6 +6,7 @@
 
 namespace application {
 
+// use sf::VertexBuffer instead?
 using Image = std::vector<sf::Vertex>;
 
 class Renderer {
@@ -14,14 +15,16 @@ public:
 
 private:
     struct Pixel {
+        // TODO: remove magic constants
+
         double depth = 1;
         sf::Color color = sf::Color::Black;
     };
+    // TODO: use container with linear memory layout
     using ZBuffer = std::vector<std::vector<Pixel>>;
 
-    ZBuffer zBufferAlgorithm(const Camera& camera, const World& world);
-    void rasterizeTriangle(const Triangle& triangle,
-                           Renderer::ZBuffer& z_buffer_);
+    ZBuffer constructZBuffer(const Camera& camera, const World& world);
+    void addTriangleToZBuffer(const Triangle& triangle, ZBuffer& z_buffer);
     std::vector<sf::Vertex> createImage(const ZBuffer& z_buffer);
 
     static constexpr size_t screen_w_ = settings::k_window_w;

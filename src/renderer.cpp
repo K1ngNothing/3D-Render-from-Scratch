@@ -7,14 +7,14 @@ namespace application {
 namespace {
 
 // FIXME
-double interpolateZ(const Point2d& X, const Triangle& triangle) {
+double interpolateZ(const Point2& X, const Triangle& triangle) {
     double sum_of_distances = 0;
-    for (const Point3d& point : triangle.points) {
-        sum_of_distances += (X - Point2d(point.x(), point.y())).norm();
+    for (const Point3& point : triangle.points) {
+        sum_of_distances += (X - Point2(point.x(), point.y())).norm();
     }
     double result = 0;
-    for (const Point3d& point : triangle.points) {
-        double distance = (X - Point2d(point.x(), point.y())).norm();
+    for (const Point3& point : triangle.points) {
+        double distance = (X - Point2(point.x(), point.y())).norm();
         double coeff = (sum_of_distances - distance) / (2 * sum_of_distances);
         result += point.z() * coeff;
     }
@@ -24,22 +24,22 @@ double interpolateZ(const Point2d& X, const Triangle& triangle) {
 }  // namespace
 
 Image Renderer::renderImage(const Camera& camera, const World& world) {
-    return createImage(zBufferAlgorithm(camera, world));
+    return createImage(constructZBuffer(camera, world));
 }
 
-Renderer::ZBuffer Renderer::zBufferAlgorithm(const Camera& camera,
+Renderer::ZBuffer Renderer::constructZBuffer(const Camera& camera,
                                              const World& world) {
     ZBuffer z_buffer(screen_w_, std::vector<Pixel>(screen_h_));
     for (const Triangle& triangle : world.getTriangles()) {
-        rasterizeTriangle(camera.transformTriangle(triangle), z_buffer);
+        addTriangleToZBuffer(camera.transformTriangle(triangle), z_buffer);
     }
     return z_buffer;
 }
 
-void Renderer::rasterizeTriangle(const Triangle& triangle,
-                                 Renderer::ZBuffer& z_buffer_) {
+void Renderer::addTriangleToZBuffer(const Triangle& triangle,
+                                    ZBuffer& z_buffer) {
     double min_x = 1, min_y = 1, max_x = -1, max_y = -1;
-    for (const Point3d& point : triangle.points) {
+    for (const Point3& point : triangle.points) {
         assert(-1 - k_eps <= point.x() && point.x() <= 1 + k_eps &&
                -1 - k_eps <= point.y() && point.y() <= 1 + k_eps &&
                "Triangle passed in renderer has unscaled coordinates");
@@ -59,11 +59,11 @@ void Renderer::rasterizeTriangle(const Triangle& triangle,
             double double_x = pixel_x * dx - 1;
             double double_y = pixel_y * dy - 1;
             double interpolated_z =
-                interpolateZ(Point2d(double_x, double_y), triangle);
+                interpolateZ(Point2(double_x, double_y), triangle);
             if (isPointInsideTriangle2D({double_x, double_y}, triangle) &&
-                z_buffer_[pixel_x][pixel_y].depth > interpolated_z + k_eps) {
-                z_buffer_[pixel_x][pixel_y].depth = interpolated_z;
-                z_buffer_[pixel_x][pixel_y].color = triangle.color;
+                z_buffer[pixel_x][pixel_y].depth > interpolated_z + g_eps) {
+                z_buffer[pixel_x][pixel_y].depth = interpolated_z;
+                z_buffer[pixel_x][pixel_y].color = triangle.color;
             }
         }
     }

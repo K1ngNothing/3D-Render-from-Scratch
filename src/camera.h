@@ -7,7 +7,7 @@ namespace application {
 class Camera {
 public:
     Camera();
-    Point3d transformPoint(const Point3d& P) const;
+    Point3 transformPoint(const Point3& P) const;
     Triangle transformTriangle(const Triangle& triangle) const;
 
 private:

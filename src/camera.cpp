@@ -9,16 +9,16 @@ namespace application {
 Camera::Camera() : transform_mat_(constructTransformMatrix()) {
 }
 
-Point3d Camera::transformPoint(const Point3d& P) const {
-    Point4d Q = {P.x(), P.y(), P.z(), 1};
-    Point4d Q_transformed = transform_mat_ * Q;
+Point3 Camera::transformPoint(const Point3& P) const {
+    Point4 Q = {P.x(), P.y(), P.z(), 1};
+    Point4 Q_transformed = transform_mat_ * Q;
     Q_transformed /= Q_transformed.w();
-    return Point3d{Q_transformed.x(), Q_transformed.y(), Q_transformed.z()};
+    return Point3{Q_transformed.x(), Q_transformed.y(), Q_transformed.z()};
 }
 
 Triangle Camera::transformTriangle(const Triangle& triangle) const {
     Triangle transformed_triangle = triangle;
-    for (Point3d& point : transformed_triangle.points) {
+    for (Point3& point : transformed_triangle.points) {
         point = transformPoint(point);
         assert(-1 - k_eps <= point.x() && point.x() <= 1 + k_eps &&
                -1 - k_eps <= point.y() && point.y() <= 1 + k_eps &&

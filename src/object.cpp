@@ -2,7 +2,7 @@
 
 namespace application {
 
-Object::Object(std::vector<Triangle> triangles, const Point3d& position)
+Object::Object(std::vector<Triangle> triangles, const Point3& position)
     : triangles_(std::move(triangles)) {
     for (Triangle& triangle : triangles_) {
         triangle += position;
