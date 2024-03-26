@@ -1,0 +1,197 @@
+@startuml Class Diagram
+
+!$s = "<U+0020>"
+!$t = $s + $s + $s + $s
+
+' --- Floating notes ---
+
+note as floatingNote #LightBlue
+    <b><size::25>In this diagram:
+    <size::20>- Point3 = Eigen::Vector3d
+    <size::20>- Matrix4 = Eigen::Matrix4d
+    <size::20>- Dotted line between classes means that 
+      <size::20>one class is using other class
+end note
+
+' --- Application ---
+class Application {
+  + Application()
+  + void run()
+  - Renderer renderer_
+  - Camera camera_
+  - World world_
+}
+
+note left of Application::Application
+  Creates predetermined scene and 
+  initializes subclasses
+end note
+
+note left of Application::run
+  Creates window with statick image
+  TODO: make scene interactive
+end note
+
+' --- Renderer ---
+
+class Renderer {
+  + Image renderImage(Camera, World)
+}
+
+note right of Renderer
+    <i>Renderer</i> is responsible for producing
+    image for Application to display
+end note
+
+' --- World ---
+
+class World {
+    - container<Object> objects_
+    + addObject(Object)
+    + getTriangles() const
+}
+
+note right of World
+    <i>World</i> is responsible for storing 
+    all objects in the render scene.
+end note
+
+' --- Object ---
+
+class Object {
+    + Object(container<Triangle>, Point3 position)
+    + container<Triangle> getTriangles() const
+    - container<Triangle> triangles_
+}
+
+note right 
+    <i>Object</i> is a represents render object in the scene
+end note
+
+
+' --- Triangle ---
+
+struct Triangle {
+    + Vertex[3] vertices
+}
+
+note right of Triangle
+  <i>Triangle</i> is a rendering primitive
+
+  - All objects in the scene are decomposed
+    into triangles 
+end note
+
+' --- Vertex ---
+
+struct Vertex {
+    + Point3 position
+    -- Scalar attributes --
+    + sf::Color color
+}
+
+note right of Vertex
+    <i>Vertex</i> represents a vertex of Triangle.
+
+    - Contains both position in 3D space and 
+      some attributes used for rendering
+end note
+
+' --- Camera ---
+
+class Camera {
+    - Matrix4 transformMatrix
+    - HVertex transformVertex(const Vertex&) const
+    + HTriangle transformTriangle(const Triangle&) const
+}
+
+note right of Camera
+    <i>Camera</i> is responsible for transorming Vertices 
+    from world-space into homogeneous camera-space.
+
+    - For now camera is stationary (TODO: add another 
+      transformation matrix).
+
+end note
+
+note left of Camera::transformVertex
+    Transforms Vertex into homogeneous camera space
+end note
+
+note left of Camera::transformTriangle
+    Just calls transformVertex for 3 triangle's vertices
+end note
+
+' --- HVertex ---
+
+class HVertex {
+    - Point3 h_position_
+    - double z_reciprocal_
+    .. Scalar attributes ..
+    - sf::Color color_
+    -- Methods --
+    + HVertex(Point3 h_position, double z,
+    $t $t $t scalar attributes...)
+    + hPosition()
+    + getScalarAttribute()
+    -- Friend functions --
+    + friend interpolate(HVertex A, HVertex B,
+    $t $t $t $t $t $t double t)
+}
+
+note right of HVertex
+    <i>HVertex</i> represents Vertex after transormation
+    in Camera's homogeneous space
+
+    - All coordinates of h_position_ are in range [-1; 1]
+    - <b>All scalar attributes are multiplied by z_reciprocal_</b> 
+      for perspective correct linear interpolation
+end note
+
+note left of HVertex::z_reciprocal_
+    Reciprocal of the <b>original</b> z coordinate for a Vertex
+end note
+
+note left of HVertex::HVertex
+    Creates HVertex with all rules
+end note
+
+note left of HVertex::getScalarAttribute
+    Returns <b>unmodified</b> scalar attribute
+    (i.e. without multiplification by z_reciprocal_)
+end note
+
+note left of HVertex::interpolate
+    Creates HVertex corresponding to (1 - t) * A + t * B.
+    - t must be in range [0; 1]
+    - h_position_, z_reciprocal_ and all scalar attributes
+      are interpolated <b>linearly</b>
+end note
+
+' --- HTriangle ---
+
+struct HTriangle {
+    + HVertex[3] h_vertices
+}
+
+note right of HTriangle
+    <i>HTriangle</i> represents Triangle after transformation
+    in Camera's homogeneous space
+end note
+
+
+' --- Relations ---
+
+Triangle o-- Vertex
+Object o-- Triangle
+World o-- Object
+Camera .. HVertex
+Camera .. HTriangle
+HTriangle o-- HVertex
+Renderer .. World
+Renderer .. Camera
+Application *-- World
+Application *-- Renderer
+Application *-- Camera
+
+@enduml
