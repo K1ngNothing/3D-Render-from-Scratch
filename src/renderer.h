@@ -1,7 +1,5 @@
 #pragma once
 #include "camera.h"
-#include "geometry.h"
-#include "settings.h"
 #include "world.h"
 
 namespace application {
@@ -15,20 +13,21 @@ public:
 
 private:
     struct Pixel {
-        // TODO: remove magic constants
+        static constexpr double k_background_depth = 1.0 + g_eps;
 
-        double depth = 1;
+        double depth = k_background_depth;
         sf::Color color = sf::Color::Black;
     };
-    // TODO: use container with linear memory layout
     using ZBuffer = std::vector<std::vector<Pixel>>;
 
-    ZBuffer constructZBuffer(const Camera& camera, const World& world);
-    void addTriangleToZBuffer(const Triangle& triangle, ZBuffer& z_buffer);
+    std::vector<HTriangle> getHTriangles(const Camera& camera,
+                                         const World& world);
+    ZBuffer constructZBuffer(const std::vector<HTriangle>& h_triangles);
     std::vector<sf::Vertex> createImage(const ZBuffer& z_buffer);
 
-    static constexpr size_t screen_w_ = settings::k_window_w;
-    static constexpr size_t screen_h_ = settings::k_window_h;
+    void addHTriangleToZBuffer(const HTriangle& h_triangle, ZBuffer& z_buffer);
+    void doScanlineIteration(size_t col, HVertex left, HVertex right,
+                             ZBuffer& z_buffer);
 };
 
 }  // namespace application

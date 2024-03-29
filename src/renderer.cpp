@@ -2,92 +2,103 @@
 
 #include <cassert>
 
+#include "settings.h"
+
 namespace application {
 
 namespace {
 
-// FIXME
-double interpolateZ(const Point2& X, const Triangle& triangle) {
-    double sum_of_distances = 0;
-    for (const Point3& point : triangle.points) {
-        sum_of_distances += (X - Point2(point.x(), point.y())).norm();
-    }
-    double result = 0;
-    for (const Point3& point : triangle.points) {
-        double distance = (X - Point2(point.x(), point.y())).norm();
-        double coeff = (sum_of_distances - distance) / (2 * sum_of_distances);
-        result += point.z() * coeff;
-    }
-    return result;
+struct PixelCoords {
+    size_t x;
+    size_t y;
+};
+
+PixelCoords homoToPixel(const Point2& P) {
+    // ([-1; 1], [-1; 1]) -> ([0; window_w], [0; window_h])
+    return PixelCoords{
+        static_cast<size_t>(floor((P.x() + 1.0) / 2.0 * settings::k_window_w)),
+        static_cast<size_t>(floor((P.y() + 1.0) / 2.0 * settings::k_window_h)),
+    };
+}
+
+sf::Vector2f getPixelPosition(size_t i, size_t j) {
+    return sf::Vector2f{static_cast<float>(i),
+                        static_cast<float>(settings::k_window_h - j)};
+}
+
+double getInterpolateCoeff(size_t x, size_t lb, size_t rb) {
+    assert(lb <= x && x <= rb);
+    return static_cast<double>(x - lb) / (rb - lb);
 }
 
 }  // namespace
 
 Image Renderer::renderImage(const Camera& camera, const World& world) {
-    return createImage(constructZBuffer(camera, world));
+    return createImage(constructZBuffer(getHTriangles(camera, world)));
 }
 
-Renderer::ZBuffer Renderer::constructZBuffer(const Camera& camera,
-                                             const World& world) {
-    ZBuffer z_buffer(screen_w_, std::vector<Pixel>(screen_h_));
-    for (const Triangle& triangle : world.getTriangles()) {
-        addTriangleToZBuffer(camera.transformTriangle(triangle), z_buffer);
+std::vector<HTriangle> Renderer::getHTriangles(const Camera& camera,
+                                               const World& world) {
+    return camera.transformTriangles(world.getTriangles());
+}
+
+Renderer::ZBuffer Renderer::constructZBuffer(
+    const std::vector<HTriangle>& h_triangles) {
+    ZBuffer z_buffer(settings::k_window_w,
+                     std::vector<Pixel>(settings::k_window_h));
+    for (const HTriangle& h_triangle : h_triangles) {
+        addHTriangleToZBuffer(h_triangle, z_buffer);
     }
     return z_buffer;
 }
 
-void Renderer::addTriangleToZBuffer(const Triangle& triangle,
-                                    ZBuffer& z_buffer) {
-    double min_x = 1, min_y = 1, max_x = -1, max_y = -1;
-    for (const Point3& point : triangle.points) {
-        assert(-1 - k_eps <= point.x() && point.x() <= 1 + k_eps &&
-               -1 - k_eps <= point.y() && point.y() <= 1 + k_eps &&
-               "Triangle passed in renderer has unscaled coordinates");
-        min_x = std::min(min_x, point.x());
-        min_y = std::min(min_y, point.y());
-
-        max_x = std::max(max_x, point.x());
-        max_y = std::max(max_y, point.y());
-    }
-    double dx = 2.0 / screen_w_, dy = 2.0 / screen_h_;
-    size_t min_pixel_x = floor((min_x + 1) / dx);
-    size_t max_pixel_x = ceil((max_x + 1) / dx);
-    size_t min_pixel_y = floor((min_y + 1) / dy);
-    size_t max_pixel_y = ceil((max_y + 1) / dy);
-    for (size_t pixel_x = min_pixel_x; pixel_x <= max_pixel_x; pixel_x++) {
-        for (size_t pixel_y = min_pixel_y; pixel_y <= max_pixel_y; pixel_y++) {
-            double double_x = pixel_x * dx - 1;
-            double double_y = pixel_y * dy - 1;
-            double interpolated_z =
-                interpolateZ(Point2(double_x, double_y), triangle);
-            if (isPointInsideTriangle2D({double_x, double_y}, triangle) &&
-                z_buffer[pixel_x][pixel_y].depth > interpolated_z + g_eps) {
-                z_buffer[pixel_x][pixel_y].depth = interpolated_z;
-                z_buffer[pixel_x][pixel_y].color = triangle.color;
-            }
-        }
-    }
-}
-
 Image Renderer::createImage(const ZBuffer& z_buffer_) {
     Image image;
-    image.reserve(screen_h_ * screen_w_);
-    for (size_t i = 0; i < screen_w_; i++) {
-        for (size_t j = 0; j < screen_h_; j++) {
-            sf::Vector2f position{static_cast<float>(i),
-                                  static_cast<float>(screen_h_ - j)};
-            sf::Color color = z_buffer_[i][j].color;
-
-            // FIXME
-            // double shade_coeff = 1 - (z_buffer_[i][j] + 1) / 2;
-            double shade_coeff = 1;
-            color.r *= shade_coeff;
-            color.g *= shade_coeff;
-            color.b *= shade_coeff;
-            image.emplace_back(position, color);
+    image.reserve(settings::k_window_w * settings::k_window_h);
+    for (size_t i = 0; i < settings::k_window_w; i++) {
+        for (size_t j = 0; j < settings::k_window_h; j++) {
+            image.emplace_back(getPixelPosition(i, j), z_buffer_[i][j].color);
         }
     }
     return image;
+}
+
+void Renderer::addHTriangleToZBuffer(const HTriangle& h_triangle,
+                                     ZBuffer& z_buffer) {
+    auto [top, middle, bottom] = h_triangle.hVertices();
+    size_t yTop = homoToPixel(top.hPosition().head(2)).y;
+    size_t yMiddle = homoToPixel(middle.hPosition().head(2)).y;
+    size_t yBottom = homoToPixel(bottom.hPosition().head(2)).y;
+
+    for (size_t row = yBottom; row <= yTop; row++) {
+        HVertex left =
+            interpolate(bottom, top, getInterpolateCoeff(row, yBottom, yTop));
+        HVertex right =
+            (row <= yMiddle)
+                ? interpolate(bottom, middle,
+                              getInterpolateCoeff(row, yBottom, yMiddle))
+                : interpolate(middle, top,
+                              getInterpolateCoeff(row, yMiddle, yTop));
+        doScanlineIteration(row, left, right, z_buffer);
+    }
+}
+
+void Renderer::doScanlineIteration(size_t row, HVertex left, HVertex right,
+                                   ZBuffer& z_buffer) {
+    size_t xLeft = homoToPixel(left.hPosition().head(2)).x;
+    size_t xRight = homoToPixel(right.hPosition().head(2)).x;
+    if (xLeft > xRight) {
+        std::swap(left, right);
+        std::swap(xLeft, xRight);
+    }
+    for (size_t col = xLeft; col <= xRight; col++) {
+        HVertex P =
+            interpolate(left, right, getInterpolateCoeff(col, xLeft, xRight));
+        if (z_buffer[col][row].depth > P.hPosition().z()) {
+            z_buffer[col][row] = {.depth = P.hPosition().z(),
+                                  .color = P.calculateColor()};
+        }
+    }
 }
 
 }  // namespace application

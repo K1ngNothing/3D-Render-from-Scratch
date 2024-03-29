@@ -9,6 +9,7 @@ namespace application {
 class World {
 public:
     void addObject(const Object& object);
+    // TODO: make iterators
     std::vector<Triangle> getTriangles() const;
 
 private:

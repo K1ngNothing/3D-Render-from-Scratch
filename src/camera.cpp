@@ -3,28 +3,39 @@
 #include <cassert>
 
 #include "settings.h"
+#include "utils.h"
 
 namespace application {
 
 Camera::Camera() : transform_mat_(constructTransformMatrix()) {
 }
 
-Point3 Camera::transformPoint(const Point3& P) const {
-    Point4 Q = {P.x(), P.y(), P.z(), 1};
-    Point4 Q_transformed = transform_mat_ * Q;
-    Q_transformed /= Q_transformed.w();
-    return Point3{Q_transformed.x(), Q_transformed.y(), Q_transformed.z()};
+std::vector<HTriangle> Camera::transformTriangles(
+    const std::vector<Triangle>& triangles) const {
+    std::vector<HTriangle> h_triangles;
+    h_triangles.reserve(triangles.size());
+    for (const Triangle& triangle : triangles) {
+        h_triangles.push_back(transformTriangle(triangle));
+    }
+    return h_triangles;
 }
 
-Triangle Camera::transformTriangle(const Triangle& triangle) const {
-    Triangle transformed_triangle = triangle;
-    for (Point3& point : transformed_triangle.points) {
-        point = transformPoint(point);
-        assert(-1 - k_eps <= point.x() && point.x() <= 1 + k_eps &&
-               -1 - k_eps <= point.y() && point.y() <= 1 + k_eps &&
-               "Transformation failed");
-    }
-    return transformed_triangle;
+HVertex Camera::transformVertex(const Vertex& P) const {
+    Point4 Q = {P.position.x(), P.position.y(), P.position.z(), 1};
+    Point4 Q_transformed = transform_mat_ * Q;
+
+    Point3 new_pos = Q_transformed.head(3) / Q_transformed.w();
+    double z_rec = 1.0 / Q_transformed.w();
+    assert(inRange(new_pos.x(), -1, 1) && inRange(new_pos.y(), -1, 1) &&
+           inRange(new_pos.z(), -1, 1) && z_rec > 0 &&
+           "vertex transformation failed :(");
+    return HVertex(new_pos, z_rec, P.color);
+}
+
+HTriangle Camera::transformTriangle(const Triangle& triangle) const {
+    return HTriangle(transformVertex(triangle.vertices[0]),
+                     transformVertex(triangle.vertices[1]),
+                     transformVertex(triangle.vertices[2]));
 }
 
 Eigen::Matrix4d Camera::constructTransformMatrix() {
@@ -34,8 +45,8 @@ Eigen::Matrix4d Camera::constructTransformMatrix() {
     double e = 1.0 / tan(settings::k_fov_angle / 2);
     double l = -n / e;
     double r = n / e;
-    double b = -settings::aspect_ratio * n / e;
-    double t = settings::aspect_ratio * n / e;
+    double b = -settings::k_aspect_ratio * n / e;
+    double t = settings::k_aspect_ratio * n / e;
     return Eigen::Matrix4d{
         {2 * n / (r - l),               0,  (r + l) / (r - l),                    0},
         {              0, 2 * n / (t - b),  (t + b) / (t - b),                    0},

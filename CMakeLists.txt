@@ -17,7 +17,7 @@ add_executable(
     main.cpp
     src/application.cpp
     src/camera.cpp
-    src/geometry.cpp
+    src/hvertex.cpp
     src/object.cpp
     src/renderer.cpp
     src/world.cpp

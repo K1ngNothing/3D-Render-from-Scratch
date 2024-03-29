@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "geometry.h"
+#include "vertex.h"
 
 namespace application {
 

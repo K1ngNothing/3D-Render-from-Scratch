@@ -7,13 +7,20 @@ namespace application {
 Application::Application()
     : render_window_(sf::VideoMode(settings::k_window_w, settings::k_window_h),
                      settings::window_name) {
+    render_window_.setFramerateLimit(settings::k_framerate_limit);
+
     // some scene for testing
     Triangle triangle1 = Triangle{
-        Point3{-2,  4, -4},
-        Point3{ 6,  3, -8},
-        Point3{-8, -4, -9},
-        sf::Color::Red
+        Vertex{ Point3{-2, 4, -4},   sf::Color::Red},
+        Vertex{  Point3{6, 3, -8}, sf::Color::Green},
+        Vertex{Point3{-8, -4, -9},  sf::Color::Blue},
     };
+
+    // Triangle triangle1 = Triangle{
+    //     Vertex{ Point3{-3, 2, -10},   sf::Color::Red},
+    //     Vertex{  Point3{4, 1, -10}, sf::Color::Green},
+    //     Vertex{Point3{-1, -3, -10},  sf::Color::Blue},
+    // };
     world_.addObject(Object{std::vector<Triangle>{triangle1}});
 }
 
