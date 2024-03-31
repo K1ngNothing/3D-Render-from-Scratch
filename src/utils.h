@@ -36,4 +36,15 @@ inline sf::Vector2f operator*(sf::Vector2f vec1, sf::Vector2f vec2) {
     return sf::Vector2f{vec1.x * vec2.x, vec1.y * vec2.y};
 }
 
+inline std::ostream& operator<<(std::ostream& os, const Point3& point) {
+    os << "(" << point.x() << ", " << point.y() << ", " << point.z() << ")";
+    return os;
+}
+
+inline std::ostream& operator<<(std::ostream& os, const Point4& point) {
+    os << "(" << point.x() << ", " << point.y() << ", " << point.z() << ", "
+       << point.w() << ")";
+    return os;
+}
+
 }  // namespace application

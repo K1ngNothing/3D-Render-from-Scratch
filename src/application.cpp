@@ -8,40 +8,109 @@ Application::Application()
     : render_window_(sf::VideoMode(settings::k_window_w, settings::k_window_h),
                      settings::window_name) {
     render_window_.setFramerateLimit(settings::k_framerate_limit);
-
-    // some scene for testing
-    Triangle triangle1 = Triangle{
-        Vertex{ Point3{-2, 4, -4},   sf::Color::Red},
-        Vertex{  Point3{6, 3, -8}, sf::Color::Green},
-        Vertex{Point3{-8, -4, -9},  sf::Color::Blue},
-    };
-
-    // Triangle triangle1 = Triangle{
-    //     Vertex{ Point3{-3, 2, -10},   sf::Color::Red},
-    //     Vertex{  Point3{4, 1, -10}, sf::Color::Green},
-    //     Vertex{Point3{-1, -3, -10},  sf::Color::Blue},
-    // };
-    world_.addObject(Object{std::vector<Triangle>{triangle1}});
+    createScene();
 }
 
 void Application::run() {
-    // At the moment produces static image
-    // Therefore we draw one frame and then waiting for window's closing
-    drawFrame();
+    sf::Clock frame_clock;
     while (render_window_.isOpen()) {
-        handleEvents();
+        double delta_time = frame_clock.restart().asSeconds();
+        FrameMovement camera_movement = getUserInputs(delta_time);
+        camera_.moveCamera(camera_movement);
+        drawFrame();
+        checkWindowClosing();
     }
 }
 
-void Application::handleEvents() {
-    // At the moment only checks for window's closing
+void Application::createScene() {
+    // Pyramid
+    Vertex A{
+        Point3{0, 0, -1},
+        sf::Color::Blue
+    };
+    Vertex B{
+        Point3{0, 0, -5},
+        sf::Color::Cyan
+    };
+    Vertex C{
+        Point3{3, 0, -3},
+        sf::Color::Magenta
+    };
+    Vertex D{
+        Point3{-3, 0, -3},
+        sf::Color::Yellow
+    };
+    Vertex E{
+        Point3{0, 3, -3},
+        sf::Color::Green
+    };
+    std::vector<Triangle> triangles = {
+        Triangle{A, B, C},
+        Triangle{A, B, D},
+        Triangle{A, C, E},
+        Triangle{C, B, E},
+        Triangle{B, D, E},
+        Triangle{D, A, E},
+    };
+    // std::vector<Triangle> triangles = {
+    //     Triangle{D, E, C},
+    // };
+    //     Vertex A{
+    //         Point3{-0.9, 0, -1},
+    //         sf::Color::Red
+    //     };
+    //     Vertex B{
+    //         Point3{0.9, 0, -1},
+    //         sf::Color::Green
+    //     };
+    //     Vertex C{
+    //         Point3{0, 2, -1},
+    //         sf::Color::Blue
+    //     };
+    //     Vertex D{
+    //         Point3{0, -2, -1},
+    //         sf::Color::Blue
+    //     };
+    //     std::vector<Triangle> triangles = {
+    //         Triangle{A, B, C},
+    //  // Triangle{A, B, D}
+    //     };
+    world_.addObject(Object{triangles});
+}
+
+void Application::checkWindowClosing() {
     sf::Event event;
     while (render_window_.pollEvent(event)) {
-        if (event.type == sf::Event::Closed) {
+        if (event.type == sf::Event::Closed ||
+            (event.KeyPressed && event.key.code == sf::Keyboard::Escape)) {
             render_window_.close();
             return;
         }
     }
+}
+
+FrameMovement Application::getUserInputs(double delta_time) {
+    Point3 shift = Point3::Zero();
+    double movement_val = settings::k_camera_movement_speed * delta_time;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+        shift.z() -= movement_val;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+        shift.z() += movement_val;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+        shift.x() += movement_val;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+        shift.x() -= movement_val;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+        shift.y() += movement_val;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+        shift.y() -= movement_val;
+    }
+    return FrameMovement{shift};
 }
 
 void Application::drawFrame() {

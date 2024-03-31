@@ -26,7 +26,7 @@ private:
     std::vector<sf::Vertex> createImage(const ZBuffer& z_buffer);
 
     void addHTriangleToZBuffer(const HTriangle& h_triangle, ZBuffer& z_buffer);
-    void doScanlineIteration(size_t col, HVertex left, HVertex right,
+    void doScanlineIteration(size_t row, HVertex left, HVertex right,
                              ZBuffer& z_buffer);
 };
 

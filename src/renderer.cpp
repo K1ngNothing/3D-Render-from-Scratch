@@ -15,9 +15,14 @@ struct PixelCoords {
 
 PixelCoords homoToPixel(const Point2& P) {
     // ([-1; 1], [-1; 1]) -> ([0; window_w], [0; window_h])
+    double raw_x = (P.x() + 1.0) / 2.0 * settings::k_window_w;
+    double raw_y = (P.y() + 1.0) / 2.0 * settings::k_window_h;
+    auto discretize = [](const double x, const size_t upper_bound) {
+        return std::min<size_t>(std::max(0.0, floor(x)), upper_bound - 1);
+    };
     return PixelCoords{
-        static_cast<size_t>(floor((P.x() + 1.0) / 2.0 * settings::k_window_w)),
-        static_cast<size_t>(floor((P.y() + 1.0) / 2.0 * settings::k_window_h)),
+        discretize(raw_x, settings::k_window_w),
+        discretize(raw_y, settings::k_window_h),
     };
 }
 
@@ -27,7 +32,7 @@ sf::Vector2f getPixelPosition(size_t i, size_t j) {
 }
 
 double getInterpolateCoeff(size_t x, size_t lb, size_t rb) {
-    assert(lb <= x && x <= rb);
+    assert(lb != rb && lb <= x && x <= rb);
     return static_cast<double>(x - lb) / (rb - lb);
 }
 
@@ -70,11 +75,19 @@ void Renderer::addHTriangleToZBuffer(const HTriangle& h_triangle,
     size_t yMiddle = homoToPixel(middle.hPosition().head(2)).y;
     size_t yBottom = homoToPixel(bottom.hPosition().head(2)).y;
 
+    if (yTop == yBottom) {
+        // degenerate case
+        doScanlineIteration(yTop, top, middle, z_buffer);
+        doScanlineIteration(yTop, middle, bottom, z_buffer);
+        doScanlineIteration(yTop, top, bottom, z_buffer);
+        return;
+    }
+
     for (size_t row = yBottom; row <= yTop; row++) {
         HVertex left =
             interpolate(bottom, top, getInterpolateCoeff(row, yBottom, yTop));
         HVertex right =
-            (row <= yMiddle)
+            (row <= yMiddle && yMiddle != yBottom)
                 ? interpolate(bottom, middle,
                               getInterpolateCoeff(row, yBottom, yMiddle))
                 : interpolate(middle, top,
@@ -85,19 +98,32 @@ void Renderer::addHTriangleToZBuffer(const HTriangle& h_triangle,
 
 void Renderer::doScanlineIteration(size_t row, HVertex left, HVertex right,
                                    ZBuffer& z_buffer) {
+    auto update_zbuffer = [&z_buffer](const size_t col, const size_t row,
+                                      const HVertex& vert) {
+        if (z_buffer[col][row].depth > vert.hPosition().z()) {
+            z_buffer[col][row] = {.depth = vert.hPosition().z(),
+                                  .color = vert.calculateColor()};
+        }
+    };
     size_t xLeft = homoToPixel(left.hPosition().head(2)).x;
     size_t xRight = homoToPixel(right.hPosition().head(2)).x;
+
+    if (xLeft == xRight) {
+        if (left.hPosition().z() > right.hPosition().z()) {
+            update_zbuffer(xLeft, row, left);
+        } else {
+            update_zbuffer(xLeft, row, right);
+        }
+        return;
+    }
     if (xLeft > xRight) {
         std::swap(left, right);
         std::swap(xLeft, xRight);
     }
     for (size_t col = xLeft; col <= xRight; col++) {
-        HVertex P =
-            interpolate(left, right, getInterpolateCoeff(col, xLeft, xRight));
-        if (z_buffer[col][row].depth > P.hPosition().z()) {
-            z_buffer[col][row] = {.depth = P.hPosition().z(),
-                                  .color = P.calculateColor()};
-        }
+        update_zbuffer(
+            col, row,
+            interpolate(left, right, getInterpolateCoeff(col, xLeft, xRight)));
     }
 }
 

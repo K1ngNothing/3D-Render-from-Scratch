@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "camera.h"
+#include "frame_movement.h"
 #include "renderer.h"
 #include "world.h"
 
@@ -14,7 +15,9 @@ public:
     void run();
 
 private:
-    void handleEvents();
+    void createScene();
+    void checkWindowClosing();
+    FrameMovement getUserInputs(double delta_time);
     void drawFrame();
 
     sf::RenderWindow render_window_;
