@@ -6,14 +6,22 @@ namespace application {
 
 struct FrameMovement {
     Point3 shift;
+    double turn_up;
+    double turn_right;
 };
 
 inline Matrix4 translateMovementToMatrix(const FrameMovement& movement) {
+    double cos_up = cos(movement.turn_up);
+    double sin_up = sin(movement.turn_up);
+    double cos_right = cos(movement.turn_right);
+    double sin_right = sin(movement.turn_right);
+    // TODO: fix clang format
     return Matrix4{
-        {1, 0, 0, movement.shift.x()},
-        {0, 1, 0, movement.shift.y()},
-        {0, 0, 1, movement.shift.z()},
-        {0, 0, 0,                  1},
+        {cos_right, -sin_right * sin_up, -sin_right * cos_up,
+         movement.shift.x()                                                     },
+        {        0,              cos_up,             -sin_up, movement.shift.y()},
+        {sin_right,  cos_right * sin_up,  cos_right * cos_up, movement.shift.z()},
+        {        0,                   0,                   0,                  1},
     };
 }
 

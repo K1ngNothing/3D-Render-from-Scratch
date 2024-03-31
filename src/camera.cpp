@@ -77,22 +77,14 @@ HVertex Camera::transformVertex(const Vertex& P) const {
 
 std::vector<HTriangle> Camera::transformTriangle(
     const Triangle& triangle) const {
-    std::cout << "Input triangle:\n" << triangle << "\n";
     Triangle shifted_triangle = moveTriangle(triangle);
-    std::cout << "Triangle after shifting:\n" << shifted_triangle << "\n";
     std::vector<Triangle> clipped_triangles = clipTriangle(shifted_triangle);
-    std::cout << "Triangles after clipping:\n";
-    for (const auto& tr : clipped_triangles) {
-        std::cout << tr << "\n";
-    }
     std::vector<HTriangle> result;
     result.reserve(clipped_triangles.size());
-    // std::cout << "Result triangles:\n";
     for (const Triangle& clipped_triangle : clipped_triangles) {
         result.emplace_back(transformVertex(clipped_triangle.vertices[0]),
                             transformVertex(clipped_triangle.vertices[1]),
                             transformVertex(clipped_triangle.vertices[2]));
-        // std::cout << result.back() << "\n";
     }
     return result;
 }
@@ -110,13 +102,6 @@ std::vector<Triangle> Camera::clipTriangle(const Triangle& triangle) const {
                                  triangle.vertices.end()};
     for (const Plane& plane : clipping_planes_) {
         vertices = clipWithPlane(vertices, plane);
-        if (plane == clipping_planes_.back()) {
-            std::cout << "Clipping with top plane" << plane << "\n";
-            for (const auto& vert : vertices) {
-                std::cout << vert << "\n";
-            }
-            std::cout << "\n";
-        }
     }
     assert((vertices.empty() || vertices.size() == 3 || vertices.size() == 4) &&
            "Triangle clipping result has too many vertices");

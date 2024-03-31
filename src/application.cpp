@@ -24,57 +24,28 @@ void Application::run() {
 
 void Application::createScene() {
     // Pyramid
-    Vertex A{
-        Point3{0, 0, -1},
-        sf::Color::Blue
-    };
-    Vertex B{
-        Point3{0, 0, -5},
-        sf::Color::Cyan
-    };
-    Vertex C{
-        Point3{3, 0, -3},
-        sf::Color::Magenta
-    };
-    Vertex D{
-        Point3{-3, 0, -3},
-        sf::Color::Yellow
-    };
-    Vertex E{
-        Point3{0, 3, -3},
-        sf::Color::Green
+    Point3 A{0, 0, -2};
+    Point3 B{0, 0, -6};
+    Point3 C{2, 0, -4};
+    Point3 D{-2, 0, -4};
+    Point3 E{0, 3, -4};
+
+    auto createFace = [](const Point3& A, const Point3& B, const Point3& C,
+                         const sf::Color& color) {
+        return Triangle{
+            Vertex{A, color},
+            Vertex{B, color},
+            Vertex{C, color},
+        };
     };
     std::vector<Triangle> triangles = {
-        Triangle{A, B, C},
-        Triangle{A, B, D},
-        Triangle{A, C, E},
-        Triangle{C, B, E},
-        Triangle{B, D, E},
-        Triangle{D, A, E},
+        createFace(A, E, C, sf::Color::Blue),
+        createFace(A, E, D, sf::Color::Magenta),
+        createFace(B, E, D, sf::Color::Cyan),
+        createFace(B, E, C, sf::Color::Green),
+        createFace(A, B, D, sf::Color::Red),
+        createFace(A, B, C, sf::Color::Red),
     };
-    // std::vector<Triangle> triangles = {
-    //     Triangle{D, E, C},
-    // };
-    //     Vertex A{
-    //         Point3{-0.9, 0, -1},
-    //         sf::Color::Red
-    //     };
-    //     Vertex B{
-    //         Point3{0.9, 0, -1},
-    //         sf::Color::Green
-    //     };
-    //     Vertex C{
-    //         Point3{0, 2, -1},
-    //         sf::Color::Blue
-    //     };
-    //     Vertex D{
-    //         Point3{0, -2, -1},
-    //         sf::Color::Blue
-    //     };
-    //     std::vector<Triangle> triangles = {
-    //         Triangle{A, B, C},
-    //  // Triangle{A, B, D}
-    //     };
     world_.addObject(Object{triangles});
 }
 
@@ -91,7 +62,12 @@ void Application::checkWindowClosing() {
 
 FrameMovement Application::getUserInputs(double delta_time) {
     Point3 shift = Point3::Zero();
+    double turn_up = 0, turn_right = 0;
+
     double movement_val = settings::k_camera_movement_speed * delta_time;
+    double turning_val = settings::k_camera_turning_speed * delta_time;
+
+    // movement
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
         shift.z() -= movement_val;
     }
@@ -110,7 +86,21 @@ FrameMovement Application::getUserInputs(double delta_time) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
         shift.y() -= movement_val;
     }
-    return FrameMovement{shift};
+
+    // turning
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+        turn_up += turning_val;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+        turn_up -= turning_val;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+        turn_right += turning_val;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+        turn_right -= turning_val;
+    }
+    return FrameMovement{shift, turn_up, turn_right};
 }
 
 void Application::drawFrame() {
