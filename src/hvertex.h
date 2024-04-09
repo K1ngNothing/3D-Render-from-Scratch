@@ -6,7 +6,7 @@
 
 #include "geometry.h"
 
-namespace application {
+namespace render_app {
 
 class HVertex {
 public:
@@ -47,4 +47,4 @@ private:
 
 std::ostream& operator<<(std::ostream& os, const HTriangle& h_triangle);
 
-}  // namespace application
+}  // namespace render_app

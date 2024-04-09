@@ -7,7 +7,7 @@
 #include "renderer.h"
 #include "world.h"
 
-namespace application {
+namespace render_app {
 
 class Application {
 public:
@@ -26,4 +26,4 @@ private:
     World world_;
 };
 
-}  // namespace application
+}  // namespace render_app

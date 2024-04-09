@@ -1,8 +1,12 @@
 #include <application.h>
+#include <except.h>
 
 int main() {
-    using namespace application;
-    Application app;
-    app.run();
-    // TODO: do smth with exceptions
+    try {
+        render_app::Application app;
+        app.run();
+    } catch (...) {
+        except::react();
+    }
+    return 0;
 }

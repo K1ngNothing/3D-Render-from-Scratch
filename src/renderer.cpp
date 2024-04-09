@@ -4,7 +4,7 @@
 
 #include "settings.h"
 
-namespace application {
+namespace render_app {
 
 namespace {
 
@@ -44,13 +44,12 @@ Image Renderer::renderImage(const Camera& camera, const World& world) {
 
 std::vector<HTriangle> Renderer::getHTriangles(const Camera& camera,
                                                const World& world) {
-    return camera.transformTriangles(world.getTriangles());
+    return camera.transformWorldTriangles(world);
 }
 
 Renderer::ZBuffer Renderer::constructZBuffer(
     const std::vector<HTriangle>& h_triangles) {
-    ZBuffer z_buffer(settings::k_window_w,
-                     std::vector<Pixel>(settings::k_window_h));
+    ZBuffer z_buffer(settings::k_window_w, settings::k_window_h);
     for (const HTriangle& h_triangle : h_triangles) {
         addHTriangleToZBuffer(h_triangle, z_buffer);
     }
@@ -62,7 +61,7 @@ Image Renderer::createImage(const ZBuffer& z_buffer_) {
     image.reserve(settings::k_window_w * settings::k_window_h);
     for (size_t i = 0; i < settings::k_window_w; i++) {
         for (size_t j = 0; j < settings::k_window_h; j++) {
-            image.emplace_back(getPixelPosition(i, j), z_buffer_[i][j].color);
+            image.emplace_back(getPixelPosition(i, j), z_buffer_(i, j).color);
         }
     }
     return image;
@@ -100,8 +99,8 @@ void Renderer::doScanlineIteration(size_t row, HVertex left, HVertex right,
                                    ZBuffer& z_buffer) {
     auto update_zbuffer = [&z_buffer](const size_t col, const size_t row,
                                       const HVertex& vert) {
-        if (z_buffer[col][row].depth > vert.hPosition().z()) {
-            z_buffer[col][row] = {.depth = vert.hPosition().z(),
+        if (z_buffer(col, row).depth > vert.hPosition().z()) {
+            z_buffer(col, row) = {.depth = vert.hPosition().z(),
                                   .color = vert.calculateColor()};
         }
     };
@@ -127,4 +126,4 @@ void Renderer::doScanlineIteration(size_t row, HVertex left, HVertex right,
     }
 }
 
-}  // namespace application
+}  // namespace render_app

@@ -1,19 +1,53 @@
 #include "world.h"
 
-namespace application {
+namespace render_app {
 
-void World::addObject(const Object& object) {
-    objects.push_back(object);
+World::Iterator::Iterator(const World& world, size_t object_id,
+                          size_t triangle_id)
+    : world_ref_(world), object_id_(object_id), triangle_id_(triangle_id) {
 }
 
-std::vector<Triangle> World::getTriangles() const {
-    std::vector<Triangle> triangles;
-    for (const Object& obj : objects) {
-        for (const Triangle& triangle : obj.getTriangles()) {
-            triangles.push_back(triangle);
-        }
+World::Iterator& World::Iterator::operator++() {
+    ++triangle_id_;
+    if (world_ref_.objects[object_id_].triangles().size() == triangle_id_) {
+        triangle_id_ = 0;
+        ++object_id_;
     }
-    return triangles;
+    return *this;
 }
 
-}  // namespace application
+World::Iterator World::Iterator::operator++(int) {
+    Iterator copy = *this;
+    ++(*this);
+    return copy;
+}
+
+bool World::Iterator::operator==(Iterator other) const {
+    return (triangle_id_ == other.triangle_id_ &&
+            object_id_ == other.object_id_);
+}
+bool World::Iterator::operator!=(Iterator other) const {
+    return !(*this == other);
+}
+const Triangle& World::Iterator::operator*() const {
+    return world_ref_.objects[object_id_].triangles()[triangle_id_];
+}
+
+void World::addObject(Object&& object) {
+    objects.push_back(object);
+    triangle_count_ += object.triangles().size();
+}
+
+World::Iterator World::begin() const {
+    return Iterator(*this, 0, 0);
+}
+
+World::Iterator World::end() const {
+    return Iterator(*this, objects.size(), 0);
+}
+
+size_t World::trianglesCount() const {
+    return triangle_count_;
+}
+
+}  // namespace render_app

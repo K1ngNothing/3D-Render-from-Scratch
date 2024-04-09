@@ -4,17 +4,17 @@
 
 #include "vertex.h"
 
-namespace application {
+namespace render_app {
 
 class Object {
 public:
     // TODO: support more transformations
-    Object(std::vector<Triangle> triangles,
+    Object(std::vector<Triangle>&& triangles,
            const Point3& position = Point3::Zero());
-    const std::vector<Triangle>& getTriangles() const;
+    const std::vector<Triangle>& triangles() const;
 
 private:
     std::vector<Triangle> triangles_;
 };
 
-}  // namespace application
+}  // namespace render_app

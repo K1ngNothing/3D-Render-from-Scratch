@@ -2,7 +2,7 @@
 
 #include "settings.h"
 
-namespace application {
+namespace render_app {
 
 Application::Application()
     : render_window_(sf::VideoMode(settings::k_window_w, settings::k_window_h),
@@ -38,15 +38,31 @@ void Application::createScene() {
             Vertex{C, color},
         };
     };
+    auto createFaceGradient = [](const Point3& A, const Point3& B,
+                                 const Point3& C) {
+        return Triangle{
+            Vertex{A,   sf::Color::Red},
+            Vertex{B,  sf::Color::Blue},
+            Vertex{C, sf::Color::Green},
+        };
+    };
+    // std::vector<Triangle> triangles = {
+    //     createFace(A, E, C, sf::Color::Blue),
+    //     createFace(A, E, D, sf::Color::Magenta),
+    //     createFace(B, E, D, sf::Color::Cyan),
+    //     createFace(B, E, C, sf::Color::Green),
+    //     createFace(A, B, D, sf::Color::Red),
+    //     createFace(A, B, C, sf::Color::Red),
+    // };
     std::vector<Triangle> triangles = {
-        createFace(A, E, C, sf::Color::Blue),
-        createFace(A, E, D, sf::Color::Magenta),
-        createFace(B, E, D, sf::Color::Cyan),
-        createFace(B, E, C, sf::Color::Green),
+        createFaceGradient(A, E, C),
+        createFaceGradient(A, E, D),
+        createFaceGradient(B, E, D),
+        createFaceGradient(B, E, C),
         createFace(A, B, D, sf::Color::Red),
         createFace(A, B, C, sf::Color::Red),
     };
-    world_.addObject(Object{triangles});
+    world_.addObject(Object{std::move(triangles)});
 }
 
 void Application::checkWindowClosing() {
@@ -109,4 +125,4 @@ void Application::drawFrame() {
     render_window_.display();
 }
 
-}  // namespace application
+}  // namespace render_app

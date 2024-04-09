@@ -1,8 +1,9 @@
 #pragma once
 #include "camera.h"
+#include "container2d.h"
 #include "world.h"
 
-namespace application {
+namespace render_app {
 
 // use sf::VertexBuffer instead?
 using Image = std::vector<sf::Vertex>;
@@ -16,9 +17,9 @@ private:
         static constexpr double k_background_depth = 1.0 + g_eps;
 
         double depth = k_background_depth;
-        sf::Color color = sf::Color::Black;
+        sf::Color color = sf::Color::Black;  // background color
     };
-    using ZBuffer = std::vector<std::vector<Pixel>>;
+    using ZBuffer = Container2d<Pixel>;
 
     std::vector<HTriangle> getHTriangles(const Camera& camera,
                                          const World& world);
@@ -30,4 +31,4 @@ private:
                              ZBuffer& z_buffer);
 };
 
-}  // namespace application
+}  // namespace render_app

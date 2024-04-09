@@ -2,7 +2,7 @@
 
 #include "geometry.h"
 
-namespace application {
+namespace render_app {
 
 struct FrameMovement {
     Point3 shift;
@@ -25,4 +25,4 @@ inline Matrix4 translateMovementToMatrix(const FrameMovement& movement) {
     };
 }
 
-}  // namespace application
+}  // namespace render_app

@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <numbers>
 
-namespace application {
+namespace render_app {
 
 namespace settings {
 // window
@@ -26,4 +26,4 @@ constexpr double k_camera_movement_speed = 1.5;
 constexpr double k_camera_turning_speed = 1;
 }  // namespace settings
 
-}  // namespace application
+}  // namespace render_app

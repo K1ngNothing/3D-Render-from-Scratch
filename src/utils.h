@@ -5,7 +5,7 @@
 
 #include "geometry.h"
 
-namespace application {
+namespace render_app {
 
 inline sf::Color& operator*=(sf::Color& color, double coeff) {
     color.r *= coeff;
@@ -47,4 +47,4 @@ inline std::ostream& operator<<(std::ostream& os, const Point4& point) {
     return os;
 }
 
-}  // namespace application
+}  // namespace render_app

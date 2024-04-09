@@ -5,7 +5,7 @@
 #include "settings.h"
 #include "utils.h"
 
-namespace application {
+namespace render_app {
 
 namespace {
 Vertex intersectEdgeWithPlane(const Vertex& A, const Vertex& B,
@@ -46,11 +46,11 @@ Camera::Camera()
       clipping_planes_(constructClippingPlanes()) {
 }
 
-std::vector<HTriangle> Camera::transformTriangles(
-    const std::vector<Triangle>& triangles) const {
+std::vector<HTriangle> Camera::transformWorldTriangles(
+    const World& world) const {
     std::vector<HTriangle> result;
-    result.reserve(triangles.size());
-    for (const Triangle& triangle : triangles) {
+    result.reserve(world.trianglesCount());
+    for (const Triangle& triangle : world) {
         for (const HTriangle& h_triangle : transformTriangle(triangle)) {
             result.push_back(h_triangle);
         }
@@ -104,7 +104,7 @@ std::vector<Triangle> Camera::clipTriangle(const Triangle& triangle) const {
         vertices = clipWithPlane(vertices, plane);
     }
     assert((vertices.empty() || vertices.size() == 3 || vertices.size() == 4) &&
-           "Triangle clipping result has too many vertices");
+           "Triangle clipping result has inadequate vertex count");
     switch (vertices.size()) {
         case 0:
             return {};
@@ -116,7 +116,8 @@ std::vector<Triangle> Camera::clipTriangle(const Triangle& triangle) const {
                 Triangle{.vertices = {vertices[0], vertices[1], vertices[2]}},
                 Triangle{.vertices = {vertices[0], vertices[2], vertices[3]}}};
         default:
-            // TODO: throw exception in Release
+            throw std::runtime_error(
+                "Triangle clipping failed: inadequate vertex count");
             return {};
     }
 }
@@ -156,4 +157,4 @@ std::array<Plane, 6> Camera::constructClippingPlanes() const {
         Plane{                   0, -e / sqrt(e * e + a * a), -a / sqrt(e * e + a * a),  0}, // top
     };
 }
-}  // namespace application
+}  // namespace render_app

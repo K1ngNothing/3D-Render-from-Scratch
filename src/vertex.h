@@ -8,7 +8,7 @@
 #include "geometry.h"
 #include "utils.h"
 
-namespace application {
+namespace render_app {
 
 struct Vertex {
     Point3 pos;
@@ -48,4 +48,4 @@ inline std::ostream& operator<<(std::ostream& os, const Triangle& triangle) {
     return os;
 }
 
-}  // namespace application
+}  // namespace render_app

@@ -6,15 +6,15 @@
 #include "geometry.h"
 #include "hvertex.h"
 #include "vertex.h"
+#include "world.h"
 
-namespace application {
+namespace render_app {
 
 class Camera {
 public:
     Camera();
 
-    std::vector<HTriangle> transformTriangles(
-        const std::vector<Triangle>& triangles) const;
+    std::vector<HTriangle> transformWorldTriangles(const World& world) const;
     void moveCamera(const FrameMovement& movement);
 
 private:
@@ -31,4 +31,4 @@ private:
     Eigen::Matrix4d transform_mat_;
     std::array<Plane, 6> clipping_planes_;
 };
-}  // namespace application
+}  // namespace render_app

@@ -3,7 +3,7 @@
 #include "settings.h"
 #include "utils.h"
 
-namespace application {
+namespace render_app {
 
 HVertex::HVertex(const Point3& h_position, double z_reciprocal,
                  const sf::Color& color)
@@ -63,4 +63,4 @@ std::ostream& operator<<(std::ostream& os, const HTriangle& h_triangle) {
     return os;
 }
 
-}  // namespace application
+}  // namespace render_app

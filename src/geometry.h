@@ -2,7 +2,7 @@
 
 #include <Eigen/Dense>
 
-namespace application {
+namespace render_app {
 
 constexpr double g_eps = 1e-9;
 
@@ -28,4 +28,4 @@ inline Side getSide(const Point3& point, const Plane& plane) {
                                                          : Side::OUTER;
 }
 
-}  // namespace application
+}  // namespace render_app
