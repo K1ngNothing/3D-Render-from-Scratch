@@ -27,11 +27,6 @@ note left of Application::Application
   initializes subclasses
 end note
 
-note left of Application::run
-  Creates window with statick image
-  TODO: make scene interactive
-end note
-
 ' --- Renderer ---
 
 class Renderer {
@@ -48,12 +43,16 @@ end note
 class World {
     - container<Object> objects_
     + addObject(Object)
-    + getTriangles() const
+    + begin()
+    + end()
 }
 
 note right of World
     <i>World</i> is responsible for storing 
     all objects in the render scene.
+
+    - Iterating over World object allows to get 
+      all triangles in the scene
 end note
 
 ' --- Object ---
@@ -88,6 +87,8 @@ struct Vertex {
     + Point3 position
     -- Scalar attributes --
     + sf::Color color
+    ---
+    + interpolate(Vertex A, Vertex B, double t)
 }
 
 note right of Vertex
@@ -97,22 +98,35 @@ note right of Vertex
       some attributes used for rendering
 end note
 
+note left of Vertex::interpolate
+    Creates Vertex corresponding to (1 - t) * A + t * B
+
+    - t must be in range [0; 1]
+    - all scalar attributes are interpolated linearly
+
+end note
+
 ' --- Camera ---
 
 class Camera {
-    - Matrix4 transformMatrix
+    - Matrix4 movement_mat_
+    - Matrix4 transform_mat_
+    + container<HTriangle> transformWorldTriangles(const World& world) const
     - HVertex transformVertex(const Vertex&) const
-    + HTriangle transformTriangle(const Triangle&) const
+    - HTriangle transformTriangle(const Triangle&) const
 }
 
 note right of Camera
     <i>Camera</i> is responsible for transorming Vertices 
     from world-space into homogeneous camera-space.
 
-    - For now camera is stationary (TODO: add another 
-      transformation matrix).
-
 end note
+
+note left of Camera::transformWorldTriangles
+    Transforms all World's triangles 
+    into homogeneous camera space
+end note
+
 
 note left of Camera::transformVertex
     Transforms Vertex into homogeneous camera space
@@ -146,6 +160,7 @@ note right of HVertex
     - All coordinates of h_position_ are in range [-1; 1]
     - <b>All scalar attributes are multiplied by z_reciprocal_</b> 
       for perspective correct linear interpolation
+      Only exception: color_ (because it stored as triplet of uint8_t)
 end note
 
 note left of HVertex::z_reciprocal_
@@ -170,13 +185,15 @@ end note
 
 ' --- HTriangle ---
 
-struct HTriangle {
+class HTriangle {
     + HVertex[3] h_vertices
 }
 
 note right of HTriangle
     <i>HTriangle</i> represents Triangle after transformation
     in Camera's homogeneous space
+
+    - HVertices are stored in descending y order
 end note
 
 
@@ -190,6 +207,7 @@ Camera .. HTriangle
 HTriangle o-- HVertex
 Renderer .. World
 Renderer .. Camera
+Camera .. World
 Application *-- World
 Application *-- Renderer
 Application *-- Camera
