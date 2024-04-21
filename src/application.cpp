@@ -5,8 +5,9 @@
 namespace render_app {
 
 Application::Application()
-    : render_window_(sf::VideoMode(settings::k_window_w, settings::k_window_h),
-                     settings::window_name) {
+    : render_window_(
+          sf::VideoMode(settings::k_window_w, settings::k_window_h),
+          settings::window_name) {
     render_window_.setFramerateLimit(settings::k_framerate_limit);
     createScene();
 }
@@ -28,7 +29,7 @@ void Application::createScene() {
     Point3 B{0, 0, -6};
     Point3 C{2, 0, -4};
     Point3 D{-2, 0, -4};
-    Point3 E{0, 3, -4};
+    Point3 E{0, 2, -4};
 
     auto createFace = [](const Point3& A, const Point3& B, const Point3& C,
                          const sf::Color& color) {
@@ -77,13 +78,11 @@ void Application::checkWindowClosing() {
 }
 
 FrameMovement Application::getUserInputs(double delta_time) {
-    Point3 shift = Point3::Zero();
-    double turn_up = 0, turn_right = 0;
-
     double movement_val = settings::k_camera_movement_speed * delta_time;
     double turning_val = settings::k_camera_turning_speed * delta_time;
 
     // movement
+    Point3 shift = Point3::Zero();
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
         shift.z() -= movement_val;
     }
@@ -104,6 +103,7 @@ FrameMovement Application::getUserInputs(double delta_time) {
     }
 
     // turning
+    double turn_up = 0, turn_right = 0, turn_clockwise = 0;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
         turn_up += turning_val;
     }
@@ -116,7 +116,17 @@ FrameMovement Application::getUserInputs(double delta_time) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
         turn_right -= turning_val;
     }
-    return FrameMovement{shift, turn_up, turn_right};
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
+        turn_clockwise += turning_val;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
+        turn_clockwise -= turning_val;
+    }
+    return FrameMovement{
+        .shift = shift,
+        .turn_up = turn_up,
+        .turn_right = turn_right,
+        .turn_clockwise = turn_clockwise};
 }
 
 void Application::drawFrame() {

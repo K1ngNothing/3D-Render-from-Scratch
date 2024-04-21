@@ -27,8 +27,8 @@ PixelCoords homoToPixel(const Point2& P) {
 }
 
 sf::Vector2f getPixelPosition(size_t i, size_t j) {
-    return sf::Vector2f{static_cast<float>(i),
-                        static_cast<float>(settings::k_window_h - j)};
+    return sf::Vector2f{
+        static_cast<float>(i), static_cast<float>(settings::k_window_h - j)};
 }
 
 double getInterpolateCoeff(size_t x, size_t lb, size_t rb) {
@@ -42,8 +42,8 @@ Image Renderer::renderImage(const Camera& camera, const World& world) {
     return createImage(constructZBuffer(getHTriangles(camera, world)));
 }
 
-std::vector<HTriangle> Renderer::getHTriangles(const Camera& camera,
-                                               const World& world) {
+std::vector<HTriangle> Renderer::getHTriangles(
+    const Camera& camera, const World& world) {
     return camera.transformWorldTriangles(world);
 }
 
@@ -67,8 +67,8 @@ Image Renderer::createImage(const ZBuffer& z_buffer_) {
     return image;
 }
 
-void Renderer::addHTriangleToZBuffer(const HTriangle& h_triangle,
-                                     ZBuffer& z_buffer) {
+void Renderer::addHTriangleToZBuffer(
+    const HTriangle& h_triangle, ZBuffer& z_buffer) {
     auto [top, middle, bottom] = h_triangle.hVertices();
     size_t yTop = homoToPixel(top.hPosition().head(2)).y;
     size_t yMiddle = homoToPixel(middle.hPosition().head(2)).y;
@@ -87,21 +87,23 @@ void Renderer::addHTriangleToZBuffer(const HTriangle& h_triangle,
             interpolate(bottom, top, getInterpolateCoeff(row, yBottom, yTop));
         HVertex right =
             (row <= yMiddle && yMiddle != yBottom)
-                ? interpolate(bottom, middle,
-                              getInterpolateCoeff(row, yBottom, yMiddle))
-                : interpolate(middle, top,
-                              getInterpolateCoeff(row, yMiddle, yTop));
+                ? interpolate(
+                      bottom, middle,
+                      getInterpolateCoeff(row, yBottom, yMiddle))
+                : interpolate(
+                      middle, top, getInterpolateCoeff(row, yMiddle, yTop));
         doScanlineIteration(row, left, right, z_buffer);
     }
 }
 
-void Renderer::doScanlineIteration(size_t row, HVertex left, HVertex right,
-                                   ZBuffer& z_buffer) {
-    auto update_zbuffer = [&z_buffer](const size_t col, const size_t row,
-                                      const HVertex& vert) {
+void Renderer::doScanlineIteration(
+    size_t row, HVertex left, HVertex right, ZBuffer& z_buffer) {
+    auto update_zbuffer = [&z_buffer](
+                              const size_t col, const size_t row,
+                              const HVertex& vert) {
         if (z_buffer(col, row).depth > vert.hPosition().z()) {
-            z_buffer(col, row) = {.depth = vert.hPosition().z(),
-                                  .color = vert.calculateColor()};
+            z_buffer(col, row) = {
+                .depth = vert.hPosition().z(), .color = vert.calculateColor()};
         }
     };
     size_t xLeft = homoToPixel(left.hPosition().head(2)).x;

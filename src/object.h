@@ -9,8 +9,9 @@ namespace render_app {
 class Object {
 public:
     // TODO: support more transformations
-    Object(std::vector<Triangle>&& triangles,
-           const Point3& position = Point3::Zero());
+    Object(
+        std::vector<Triangle>&& triangles,
+        const Point3& position = Point3::Zero());
     const std::vector<Triangle>& triangles() const;
 
 private:

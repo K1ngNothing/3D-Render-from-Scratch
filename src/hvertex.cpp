@@ -5,8 +5,8 @@
 
 namespace render_app {
 
-HVertex::HVertex(const Point3& h_position, double z_reciprocal,
-                 const sf::Color& color)
+HVertex::HVertex(
+    const Point3& h_position, double z_reciprocal, const sf::Color& color)
     : h_position_(h_position), z_reciprocal_(z_reciprocal), color_(color) {
 }
 

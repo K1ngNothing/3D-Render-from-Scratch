@@ -2,8 +2,8 @@
 
 namespace render_app {
 
-World::Iterator::Iterator(const World& world, size_t object_id,
-                          size_t triangle_id)
+World::Iterator::Iterator(
+    const World& world, size_t object_id, size_t triangle_id)
     : world_ref_(world), object_id_(object_id), triangle_id_(triangle_id) {
 }
 
@@ -23,8 +23,8 @@ World::Iterator World::Iterator::operator++(int) {
 }
 
 bool World::Iterator::operator==(Iterator other) const {
-    return (triangle_id_ == other.triangle_id_ &&
-            object_id_ == other.object_id_);
+    return (
+        triangle_id_ == other.triangle_id_ && object_id_ == other.object_id_);
 }
 bool World::Iterator::operator!=(Iterator other) const {
     return !(*this == other);

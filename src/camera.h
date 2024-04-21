@@ -15,7 +15,7 @@ public:
     Camera();
 
     std::vector<HTriangle> transformWorldTriangles(const World& world) const;
-    void moveCamera(const FrameMovement& movement);
+    void moveCamera(FrameMovement movement);
 
 private:
     HVertex transformVertex(const Vertex& P) const;

@@ -8,8 +8,8 @@
 namespace render_app {
 
 namespace {
-Vertex intersectEdgeWithPlane(const Vertex& A, const Vertex& B,
-                              const Plane& plane) {
+Vertex intersectEdgeWithPlane(
+    const Vertex& A, const Vertex& B, const Plane& plane) {
     const Point3 norm = plane.head(3);
     const double d = plane.w();
     double denominator = A.pos.dot(norm) - B.pos.dot(norm);
@@ -19,8 +19,8 @@ Vertex intersectEdgeWithPlane(const Vertex& A, const Vertex& B,
     return interpolate(A, B, t);
 }
 
-std::vector<Vertex> clipWithPlane(const std::vector<Vertex>& vertices,
-                                  const Plane& plane) {
+std::vector<Vertex> clipWithPlane(
+    const std::vector<Vertex>& vertices, const Plane& plane) {
     // Sutherland–Hodgman algorithm
     assert(vertices.size() >= 3 || vertices.empty());
     std::vector<Vertex> result;
@@ -58,9 +58,8 @@ std::vector<HTriangle> Camera::transformWorldTriangles(
     return result;
 }
 
-void Camera::moveCamera(const FrameMovement& movement) {
-    Matrix4 shift_mat = translateMovementToMatrix(movement);
-    movement_mat_ = shift_mat.inverse() * movement_mat_;
+void Camera::moveCamera(FrameMovement movement) {
+    movement_mat_ = translateMovementToMatrix(-movement) * movement_mat_;
 }
 
 HVertex Camera::transformVertex(const Vertex& P) const {
@@ -69,9 +68,10 @@ HVertex Camera::transformVertex(const Vertex& P) const {
 
     Point3 new_pos = Q_transformed.head(3) / Q_transformed.w();
     double z_rec = 1.0 / Q_transformed.w();
-    assert(inRange(new_pos.x(), -1, 1) && inRange(new_pos.y(), -1, 1) &&
-           inRange(new_pos.z(), -1, 1) && z_rec > 0 &&
-           "vertex transformation failed :(");
+    assert(
+        inRange(new_pos.x(), -1, 1) && inRange(new_pos.y(), -1, 1) &&
+        inRange(new_pos.z(), -1, 1) && z_rec > 0 &&
+        "vertex transformation failed :(");
     return HVertex(new_pos, z_rec, P.color);
 }
 
@@ -82,9 +82,10 @@ std::vector<HTriangle> Camera::transformTriangle(
     std::vector<HTriangle> result;
     result.reserve(clipped_triangles.size());
     for (const Triangle& clipped_triangle : clipped_triangles) {
-        result.emplace_back(transformVertex(clipped_triangle.vertices[0]),
-                            transformVertex(clipped_triangle.vertices[1]),
-                            transformVertex(clipped_triangle.vertices[2]));
+        result.emplace_back(
+            transformVertex(clipped_triangle.vertices[0]),
+            transformVertex(clipped_triangle.vertices[1]),
+            transformVertex(clipped_triangle.vertices[2]));
     }
     return result;
 }
@@ -92,34 +93,35 @@ std::vector<HTriangle> Camera::transformTriangle(
 Triangle Camera::moveTriangle(const Triangle& triangle) const {
     Triangle result = triangle;
     for (Vertex& vert : result.vertices) {
-        vert.pos = (movement_mat_ * getHomoPoint(vert.pos)).head(3);
+        vert.pos = transfrormPoint(vert.pos, movement_mat_);
     }
     return result;
 }
 
 std::vector<Triangle> Camera::clipTriangle(const Triangle& triangle) const {
-    std::vector<Vertex> vertices{triangle.vertices.begin(),
-                                 triangle.vertices.end()};
+    std::vector<Vertex> vertices{
+        triangle.vertices.begin(), triangle.vertices.end()};
     for (const Plane& plane : clipping_planes_) {
         vertices = clipWithPlane(vertices, plane);
     }
-    assert((vertices.empty() || vertices.size() == 3 || vertices.size() == 4) &&
-           "Triangle clipping result has inadequate vertex count");
-    switch (vertices.size()) {
-        case 0:
-            return {};
-        case 3:
-            return {
-                Triangle{.vertices = {vertices[0], vertices[1], vertices[2]}}};
-        case 4:
-            return {
-                Triangle{.vertices = {vertices[0], vertices[1], vertices[2]}},
-                Triangle{.vertices = {vertices[0], vertices[2], vertices[3]}}};
-        default:
-            throw std::runtime_error(
-                "Triangle clipping failed: inadequate vertex count");
-            return {};
+    if (vertices.empty()) {
+        return {};
     }
+    assert(
+        vertices.size() >= 3 &&
+        "Triangle clipping result has inadequate vertex count");
+    if (vertices.size() < 3) {
+        throw std::runtime_error(
+            "Triangle clipping failed: inadequate vertex count");
+    }
+    std::vector<Triangle> result;
+    result.reserve(vertices.size() - 2);
+    for (size_t i = 2; i < vertices.size(); i++) {
+        result.emplace_back(Triangle{
+            .vertices = {vertices[0], vertices[i - 1], vertices[i]}
+        });
+    }
+    return result;
 }
 
 Eigen::Matrix4d Camera::constructTransformMatrix() const {
