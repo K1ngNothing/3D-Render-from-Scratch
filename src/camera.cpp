@@ -72,7 +72,7 @@ HVertex Camera::transformVertex(const Vertex& P) const {
         inRange(new_pos.x(), -1, 1) && inRange(new_pos.y(), -1, 1) &&
         inRange(new_pos.z(), -1, 1) && z_rec > 0 &&
         "vertex transformation failed :(");
-    return HVertex(new_pos, z_rec, P.color);
+    return HVertex(new_pos, z_rec, P.color, P.tcoords);
 }
 
 std::vector<HTriangle> Camera::transformTriangle(

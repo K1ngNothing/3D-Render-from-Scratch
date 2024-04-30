@@ -24,44 +24,61 @@ void Application::run() {
 }
 
 void Application::createScene() {
-    // Pyramid
-    Point3 A{0, 0, -2};
-    Point3 B{0, 0, -6};
-    Point3 C{2, 0, -4};
-    Point3 D{-2, 0, -4};
+    // TODO: create scene from json or smth
+
+    // Obama Pyramid
+    Point3 A{2, 0, -2};
+    Point3 B{-2, 0, -2};
+    Point3 C{-2, 0, -6};
+    Point3 D{2, 0, -6};
     Point3 E{0, 2, -4};
 
-    auto createFace = [](const Point3& A, const Point3& B, const Point3& C,
-                         const sf::Color& color) {
+    // path is relative to build folder
+    const sf::Image* obama_ptr =
+        texture_manager_.loadFromFile("../../resources/textures/obama.jpg");
+    auto [obama_w, obama_h] = obama_ptr->getSize();
+    std::vector<TextureCoords> obama_coords{
+        TextureCoords{          0, obama_h - 1, obama_ptr},
+        TextureCoords{          0,           0, obama_ptr},
+        TextureCoords{obama_w - 1,           0, obama_ptr},
+        TextureCoords{obama_w - 1, obama_h - 1, obama_ptr},
+        TextureCoords{obama_w / 2, obama_h / 2, obama_ptr},
+    };
+
+    auto createFaceTextures = [&obama_coords](
+                                  const Point3& A, const Point3& B,
+                                  const Point3& C, size_t t1, size_t t2,
+                                  size_t t3) {
         return Triangle{
-            Vertex{A, color},
-            Vertex{B, color},
-            Vertex{C, color},
+            Vertex{.pos = A, .tcoords = obama_coords[t1]},
+            Vertex{.pos = B, .tcoords = obama_coords[t2]},
+            Vertex{.pos = C, .tcoords = obama_coords[t3]},
         };
     };
-    auto createFaceGradient = [](const Point3& A, const Point3& B,
-                                 const Point3& C) {
+    auto createFaceColor = [](const Point3& A, const Point3& B, const Point3& C,
+                              const sf::Color& color) {
         return Triangle{
-            Vertex{A,   sf::Color::Red},
-            Vertex{B,  sf::Color::Blue},
-            Vertex{C, sf::Color::Green},
+            Vertex{.pos = A, .color = color},
+            Vertex{.pos = B, .color = color},
+            Vertex{.pos = C, .color = color},
         };
     };
-    // std::vector<Triangle> triangles = {
-    //     createFace(A, E, C, sf::Color::Blue),
-    //     createFace(A, E, D, sf::Color::Magenta),
-    //     createFace(B, E, D, sf::Color::Cyan),
-    //     createFace(B, E, C, sf::Color::Green),
-    //     createFace(A, B, D, sf::Color::Red),
-    //     createFace(A, B, C, sf::Color::Red),
+    // auto createFaceGradient = [](const Point3& A, const Point3& B,
+    //                              const Point3& C) {
+    //     return Triangle{
+    //         Vertex{A,   sf::Color::Red},
+    //         Vertex{B,  sf::Color::Blue},
+    //         Vertex{C, sf::Color::Green},
+    //     };
     // };
+    sf::Color brown{94, 59, 41};
     std::vector<Triangle> triangles = {
-        createFaceGradient(A, E, C),
-        createFaceGradient(A, E, D),
-        createFaceGradient(B, E, D),
-        createFaceGradient(B, E, C),
-        createFace(A, B, D, sf::Color::Red),
-        createFace(A, B, C, sf::Color::Red),
+        createFaceTextures(A, B, E, 3, 0, 4),
+        createFaceTextures(B, C, E, 0, 1, 4),
+        createFaceTextures(C, D, E, 1, 2, 4),
+        createFaceTextures(D, A, E, 2, 3, 4),
+        createFaceColor(A, B, C, brown),
+        createFaceColor(A, C, D, brown),
     };
     world_.addObject(Object{std::move(triangles)});
 }

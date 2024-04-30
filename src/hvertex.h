@@ -2,9 +2,11 @@
 
 #include <array>
 #include <iostream>
+#include <optional>
 #include <SFML/Graphics.hpp>
 
 #include "geometry.h"
+#include "textures.h"
 
 namespace render_app {
 
@@ -12,7 +14,9 @@ class HVertex {
 public:
     HVertex() = default;
     HVertex(
-        const Point3& h_position, double z_reciprocal, const sf::Color& color);
+        const Point3& h_position, double z_reciprocal,
+        const std::optional<sf::Color>& color,
+        const std::optional<TextureCoords>& tcoords);
     Point3 hPosition() const;
     sf::Color calculateColor() const;
 
@@ -20,9 +24,12 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const HVertex& h_vertex);
 
 private:
+    sf::Color getColor() const;
+
     Point3 h_position_;
     double z_reciprocal_;
-    sf::Color color_;
+    std::optional<sf::Color> color_;
+    std::optional<TextureCoords> tcoords_;
 };
 
 HVertex interpolate(const HVertex A, const HVertex B, double t);
