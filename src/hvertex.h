@@ -2,21 +2,18 @@
 
 #include <array>
 #include <iostream>
-#include <optional>
 #include <SFML/Graphics.hpp>
 
 #include "geometry.h"
-#include "textures.h"
+#include "vertex_attributes.h"
 
 namespace render_app {
 
 class HVertex {
 public:
-    HVertex() = default;
     HVertex(
         const Point3& h_position, double z_reciprocal,
-        const std::optional<sf::Color>& color,
-        const std::optional<TextureCoords>& tcoords);
+        const VertexAttributes& attr);
     Point3 hPosition() const;
     sf::Color calculateColor() const;
 
@@ -24,12 +21,9 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const HVertex& h_vertex);
 
 private:
-    sf::Color getColor() const;
-
     Point3 h_position_;
     double z_reciprocal_;
-    std::optional<sf::Color> color_;
-    std::optional<TextureCoords> tcoords_;
+    VertexAttributes attr_;
 };
 
 HVertex interpolate(const HVertex A, const HVertex B, double t);
@@ -39,16 +33,14 @@ std::ostream& operator<<(std::ostream& os, const HVertex& h_vertex);
 
 class HTriangle {
 public:
-    HTriangle(HVertex A, HVertex B, HVertex C);
+    HTriangle(const HVertex& A, const HVertex& B, const HVertex& C);
 
-    const std::array<HVertex, 3>& hVertices() const {
-        // return vertices in descending y order
-        return h_vertices_;
-    }
+    const std::array<HVertex, 3>& hVertices() const;
     friend std::ostream& operator<<(
         std::ostream& os, const HTriangle& h_triangle);
 
 private:
+    // stores vertices in descending y order
     std::array<HVertex, 3> h_vertices_;
 };
 

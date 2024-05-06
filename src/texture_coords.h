@@ -2,9 +2,7 @@
 
 #include <cassert>
 #include <iostream>
-#include <map>
 #include <SFML/Graphics/Image.hpp>
-#include <stdexcept>
 
 namespace render_app {
 struct TextureCoords {
@@ -39,26 +37,5 @@ inline std::ostream& operator<<(
     std::ostream& os, const TextureCoords& tcoords) {
     return os << "(" << tcoords.x << ", " << tcoords.y << ")";
 }
-
-// ----- TextureManager -----
-
-class TextureManager {
-public:
-    const sf::Image* loadFromFile(const std::string filename) {
-        auto it = textures_.find(filename);
-        if (it != textures_.end()) {
-            return &it->second;
-        }
-        sf::Image& texture = textures_[filename];
-        if (!texture.loadFromFile(filename)) {
-            throw std::runtime_error(
-                "TextureManager::loadFromFile: invalid filename");
-        }
-        return &texture;
-    }
-
-private:
-    std::map<std::string, sf::Image> textures_;
-};
 
 }  // namespace render_app

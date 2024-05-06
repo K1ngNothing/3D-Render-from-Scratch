@@ -5,7 +5,6 @@
 
 namespace render_app {
 
-// use sf::VertexBuffer instead?
 using Image = std::vector<sf::Vertex>;
 
 class Renderer {

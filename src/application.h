@@ -5,7 +5,6 @@
 #include "camera.h"
 #include "frame_movement.h"
 #include "renderer.h"
-#include "textures.h"
 #include "world.h"
 
 namespace render_app {
@@ -25,7 +24,6 @@ private:
     Renderer renderer_;
     Camera camera_;
     World world_;
-    TextureManager texture_manager_;
 };
 
 }  // namespace render_app

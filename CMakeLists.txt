@@ -21,6 +21,7 @@ add_executable(
     src/object.cpp
     src/renderer.cpp
     src/world.cpp
+    src/scenes.cpp
 )
 
 target_link_libraries(

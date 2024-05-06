@@ -2,12 +2,31 @@
 
 namespace render_app {
 
-World::Iterator::Iterator(
+// ----- Triangles -----
+
+Triangles::Triangles(const World& world_ref) : world_ref_(world_ref) {
+}
+
+Triangles::Iterator Triangles::begin() const {
+    return Iterator(world_ref_, 0, 0);
+}
+
+Triangles::Iterator Triangles::end() const {
+    return Iterator(world_ref_, world_ref_.objects.size(), 0);
+}
+
+size_t Triangles::size() const {
+    return world_ref_.triangle_count_;
+}
+
+// ----- Triangles::Iterator -----
+
+Triangles::Iterator::Iterator(
     const World& world, size_t object_id, size_t triangle_id)
     : world_ref_(world), object_id_(object_id), triangle_id_(triangle_id) {
 }
 
-World::Iterator& World::Iterator::operator++() {
+Triangles::Iterator& Triangles::Iterator::operator++() {
     ++triangle_id_;
     if (world_ref_.objects[object_id_].triangles().size() == triangle_id_) {
         triangle_id_ = 0;
@@ -16,38 +35,45 @@ World::Iterator& World::Iterator::operator++() {
     return *this;
 }
 
-World::Iterator World::Iterator::operator++(int) {
+Triangles::Iterator Triangles::Iterator::operator++(int) {
     Iterator copy = *this;
     ++(*this);
     return copy;
 }
 
-bool World::Iterator::operator==(Iterator other) const {
+bool Triangles::Iterator::operator==(Iterator other) const {
     return (
         triangle_id_ == other.triangle_id_ && object_id_ == other.object_id_);
 }
-bool World::Iterator::operator!=(Iterator other) const {
+bool Triangles::Iterator::operator!=(Iterator other) const {
     return !(*this == other);
 }
-const Triangle& World::Iterator::operator*() const {
+const Triangle& Triangles::Iterator::operator*() const {
     return world_ref_.objects[object_id_].triangles()[triangle_id_];
 }
+
+// ----- World -----
 
 void World::addObject(Object&& object) {
     objects.push_back(object);
     triangle_count_ += object.triangles().size();
 }
 
-World::Iterator World::begin() const {
-    return Iterator(*this, 0, 0);
+Triangles World::getTriangles() const {
+    return Triangles(*this);
 }
 
-World::Iterator World::end() const {
-    return Iterator(*this, objects.size(), 0);
-}
-
-size_t World::trianglesCount() const {
-    return triangle_count_;
+const sf::Image* World::loadTextureFromFile(const std::string filename) {
+    auto it = textures_.find(filename);
+    if (it != textures_.end()) {
+        return &it->second;
+    }
+    sf::Image& texture = textures_[filename];
+    if (!texture.loadFromFile(filename)) {
+        throw std::runtime_error(
+            "TextureManager::loadFromFile: invalid filename");
+    }
+    return &texture;
 }
 
 }  // namespace render_app

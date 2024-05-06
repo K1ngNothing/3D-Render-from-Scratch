@@ -6,7 +6,20 @@
 
 namespace render_app {
 
-class World {
+class World;
+
+class Triangles {
+private:
+    class Iterator;
+    friend class World;
+
+public:
+    Triangles(const World& world_ref);
+
+    Iterator begin() const;
+    Iterator end() const;
+    size_t size() const;
+
 private:
     class Iterator {
     public:
@@ -23,14 +36,20 @@ private:
         size_t triangle_id_;
     };
 
+    const World& world_ref_;
+};
+
+class World {
+    friend class Triangles;
+
 public:
     void addObject(Object&& object);
-    Iterator begin() const;
-    Iterator end() const;
-    size_t trianglesCount() const;
+    Triangles getTriangles() const;
+    const sf::Image* loadTextureFromFile(const std::string filename);
 
 private:
     std::vector<Object> objects;
+    std::map<std::string, sf::Image> textures_;
     size_t triangle_count_ = 0;
 };
 

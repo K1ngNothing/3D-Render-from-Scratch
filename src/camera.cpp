@@ -48,9 +48,10 @@ Camera::Camera()
 
 std::vector<HTriangle> Camera::transformWorldTriangles(
     const World& world) const {
+    Triangles triangles = world.getTriangles();
     std::vector<HTriangle> result;
-    result.reserve(world.trianglesCount());
-    for (const Triangle& triangle : world) {
+    result.reserve(triangles.size());
+    for (const Triangle& triangle : triangles) {
         for (const HTriangle& h_triangle : transformTriangle(triangle)) {
             result.push_back(h_triangle);
         }
@@ -72,7 +73,7 @@ HVertex Camera::transformVertex(const Vertex& P) const {
         inRange(new_pos.x(), -1, 1) && inRange(new_pos.y(), -1, 1) &&
         inRange(new_pos.z(), -1, 1) && z_rec > 0 &&
         "vertex transformation failed :(");
-    return HVertex(new_pos, z_rec, P.color, P.tcoords);
+    return HVertex(new_pos, z_rec, P.attr);
 }
 
 std::vector<HTriangle> Camera::transformTriangle(
@@ -107,6 +108,8 @@ std::vector<Triangle> Camera::clipTriangle(const Triangle& triangle) const {
     if (vertices.empty()) {
         return {};
     }
+
+    // Create macro for this?
     assert(
         vertices.size() >= 3 &&
         "Triangle clipping result has inadequate vertex count");
