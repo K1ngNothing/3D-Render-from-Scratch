@@ -6,19 +6,20 @@
 
 namespace render_app {
 struct TextureCoords {
-    size_t x;
-    size_t y;
+    double x;
+    double y;
     const sf::Image* image_ptr;
 
     sf::Color getColor() const {
-        return image_ptr->getPixel(x, y);
+        return image_ptr->getPixel(
+            static_cast<unsigned int>(x), static_cast<unsigned int>(y));
     }
 };
 
 inline TextureCoords operator*(const TextureCoords& tcoords, double t) {
     return TextureCoords{
-        .x = static_cast<size_t>(tcoords.x * t),
-        .y = static_cast<size_t>(tcoords.y * t),
+        .x = tcoords.x * t,
+        .y = tcoords.y * t,
         .image_ptr = tcoords.image_ptr,
     };
 }
