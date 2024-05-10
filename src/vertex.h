@@ -21,7 +21,7 @@ inline Vertex interpolate(const Vertex& A, const Vertex& B, double t) {
 
     return Vertex{
         .pos = A.pos * (1 - t) + B.pos * t,
-        .attr = interpolate(A.attr, B.attr, t)};
+        .attr = interpolate(A.attr, B.attr, 1 - t, t)};
 }
 
 inline std::ostream& operator<<(std::ostream& os, const Vertex& vert) {

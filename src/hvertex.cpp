@@ -26,10 +26,10 @@ HVertex interpolate(const HVertex A, const HVertex B, double t) {
     double z1_rec = A.z_reciprocal_;
     double z2_rec = B.z_reciprocal_;
     double z3_rec = z1_rec * (1 - t) + z2_rec * t;
-    double t_attr = z2_rec / z3_rec * t;
     return HVertex(
         A.h_position_ * (1 - t) + B.h_position_ * t, z3_rec,
-        interpolate(A.attr_, B.attr_, t_attr));
+        interpolate(
+            A.attr_, B.attr_, (1 - t) * z1_rec / z3_rec, t * z2_rec / z3_rec));
 }
 
 std::ostream& operator<<(std::ostream& os, const HVertex& h_vertex) {
