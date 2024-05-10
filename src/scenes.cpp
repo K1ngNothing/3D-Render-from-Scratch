@@ -85,4 +85,45 @@ Object createObamaPyramid(World& world) {
     return Object{std::move(triangles)};
 }
 
+Object createEgyptianPyramid(World& world) {
+    // pyramid vertices
+    Point3 A{2, 0, -2};
+    Point3 B{-2, 0, -2};
+    Point3 C{-2, 0, -6};
+    Point3 D{2, 0, -6};
+    Point3 E{0, 2, -4};
+
+    // path is relative to build folder
+    const sf::Image* pyramid_ptr =
+        world.loadTextureFromFile("../../resources/textures/pyramid.jpg");
+    auto [pyramid_w, pyramid_h] = pyramid_ptr->getSize();
+    std::vector<TextureCoords> pyramid_coords{
+        TextureCoords{            0, pyramid_h - 1, pyramid_ptr},
+        TextureCoords{            0,             0, pyramid_ptr},
+        TextureCoords{pyramid_w - 1,             0, pyramid_ptr},
+        TextureCoords{pyramid_w - 1, pyramid_h - 1, pyramid_ptr},
+        TextureCoords{pyramid_w / 2, pyramid_h / 2, pyramid_ptr},
+    };
+
+    auto createFaceTextures = [&pyramid_coords](
+                                  const Point3& A, const Point3& B,
+                                  const Point3& C, size_t t1, size_t t2,
+                                  size_t t3) {
+        return createTriangleTextures(
+            A, B, C, pyramid_coords[t1], pyramid_coords[t2],
+            pyramid_coords[t3]);
+    };
+
+    sf::Color yellow{242, 208, 114};
+    std::vector<Triangle> triangles = {
+        createFaceTextures(A, B, E, 3, 0, 4),
+        createFaceTextures(B, C, E, 3, 0, 4),
+        createFaceTextures(C, D, E, 3, 0, 4),
+        createFaceTextures(D, A, E, 3, 0, 4),
+        createTriangleColors(A, B, C, yellow, yellow, yellow),
+        createTriangleColors(A, C, D, yellow, yellow, yellow),
+    };
+    return Object{std::move(triangles)};
+}
+
 }  // namespace render_app

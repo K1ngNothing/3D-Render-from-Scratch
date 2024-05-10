@@ -46,7 +46,8 @@ inline sf::Color VertexAttributes::getColor() const {
     if (tcoords.has_value()) {
         return tcoords->getColor();
     }
-    throw std::runtime_error("VertexAttributes::getColor: no color available");
+    assert(false);
+    return sf::Color::Black;
 }
 
 }  // namespace render_app

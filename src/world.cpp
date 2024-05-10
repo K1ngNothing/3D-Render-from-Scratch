@@ -55,8 +55,8 @@ const Triangle& Triangles::Iterator::operator*() const {
 // ----- World -----
 
 void World::addObject(Object&& object) {
-    objects.push_back(object);
     triangle_count_ += object.triangles().size();
+    objects.push_back(std::move(object));
 }
 
 Triangles World::getTriangles() const {

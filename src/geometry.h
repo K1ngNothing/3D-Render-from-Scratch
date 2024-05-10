@@ -15,9 +15,9 @@ using Matrix4 = Eigen::Matrix4d;
 
 using Plane = Point4;
 
-enum Side {
-    INNER = 1,
-    OUTER = -1,
+enum class Side {
+    Inner = 1,
+    Outer = -1,
 };
 
 inline Point4 getHomoPoint(const Point3& point) {
@@ -28,17 +28,17 @@ inline Point4 getHomoVec(const Point3& vec) {
     return Point4{vec.x(), vec.y(), vec.z(), 0};
 }
 
-inline Point3 transfrormPoint(const Point3& point, const Matrix4 mat) {
+inline Point3 transformPoint(const Point3& point, const Matrix4 mat) {
     return (mat * getHomoPoint(point)).head(3);
 }
 
-inline Point3 transfrormVec(const Point3& vec, const Matrix4 mat) {
+inline Point3 transformVec(const Point3& vec, const Matrix4 mat) {
     return (mat * getHomoVec(vec)).head(3);
 }
 
 inline Side getSide(const Point3& point, const Plane& plane) {
-    return point.dot(plane.head(3)) + plane.w() > -g_eps ? Side::INNER
-                                                         : Side::OUTER;
+    return point.dot(plane.head(3)) + plane.w() > -g_eps ? Side::Inner
+                                                         : Side::Outer;
 }
 
 }  // namespace render_app

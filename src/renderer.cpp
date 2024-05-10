@@ -39,10 +39,10 @@ double getInterpolateCoeff(size_t x, size_t lb, size_t rb) {
 }  // namespace
 
 Image Renderer::renderImage(const Camera& camera, const World& world) {
-    return createImage(constructZBuffer(getHTriangles(camera, world)));
+    return createImage(constructZBuffer(createHTriangles(camera, world)));
 }
 
-std::vector<HTriangle> Renderer::getHTriangles(
+std::vector<HTriangle> Renderer::createHTriangles(
     const Camera& camera, const World& world) {
     return camera.transformWorldTriangles(world);
 }
@@ -51,7 +51,7 @@ Renderer::ZBuffer Renderer::constructZBuffer(
     const std::vector<HTriangle>& h_triangles) {
     ZBuffer z_buffer(settings::k_window_w, settings::k_window_h);
     for (const HTriangle& h_triangle : h_triangles) {
-        addHTriangleToZBuffer(h_triangle, z_buffer);
+        rasterizeHTriangle(h_triangle, z_buffer);
     }
     return z_buffer;
 }
@@ -67,7 +67,7 @@ Image Renderer::createImage(const ZBuffer& z_buffer_) {
     return image;
 }
 
-void Renderer::addHTriangleToZBuffer(
+void Renderer::rasterizeHTriangle(
     const HTriangle& h_triangle, ZBuffer& z_buffer) {
     auto [top, middle, bottom] = h_triangle.hVertices();
     size_t yTop = homoToPixel(top.hPosition().head(2)).y;

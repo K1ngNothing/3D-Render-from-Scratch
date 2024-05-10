@@ -21,7 +21,7 @@ private:
     HVertex transformVertex(const Vertex& P) const;
     std::vector<HTriangle> transformTriangle(const Triangle& triangle) const;
 
-    Triangle moveTriangle(const Triangle& triangle) const;
+    Triangle moveTriangleToCameraSpace(const Triangle& triangle) const;
     std::vector<Triangle> clipTriangle(const Triangle& triangle) const;
 
     Eigen::Matrix4d constructTransformMatrix() const;

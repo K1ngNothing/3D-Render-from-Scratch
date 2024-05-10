@@ -27,12 +27,12 @@ std::vector<Vertex> clipWithPlane(
     for (size_t i = 0; i < vertices.size(); i++) {
         Vertex cur = vertices[i];
         Vertex prev = (i == 0 ? vertices.back() : vertices[i - 1]);
-        if (getSide(cur.pos, plane) == Side::INNER) {
-            if (getSide(prev.pos, plane) == Side::OUTER) {
+        if (getSide(cur.pos, plane) == Side::Inner) {
+            if (getSide(prev.pos, plane) == Side::Outer) {
                 result.push_back(intersectEdgeWithPlane(cur, prev, plane));
             }
             result.push_back(cur);
-        } else if (getSide(prev.pos, plane) == Side::INNER) {
+        } else if (getSide(prev.pos, plane) == Side::Inner) {
             result.push_back(intersectEdgeWithPlane(cur, prev, plane));
         }
     }
@@ -78,7 +78,7 @@ HVertex Camera::transformVertex(const Vertex& P) const {
 
 std::vector<HTriangle> Camera::transformTriangle(
     const Triangle& triangle) const {
-    Triangle shifted_triangle = moveTriangle(triangle);
+    Triangle shifted_triangle = moveTriangleToCameraSpace(triangle);
     std::vector<Triangle> clipped_triangles = clipTriangle(shifted_triangle);
     std::vector<HTriangle> result;
     result.reserve(clipped_triangles.size());
@@ -91,10 +91,10 @@ std::vector<HTriangle> Camera::transformTriangle(
     return result;
 }
 
-Triangle Camera::moveTriangle(const Triangle& triangle) const {
+Triangle Camera::moveTriangleToCameraSpace(const Triangle& triangle) const {
     Triangle result = triangle;
     for (Vertex& vert : result.vertices) {
-        vert.pos = transfrormPoint(vert.pos, movement_mat_);
+        vert.pos = transformPoint(vert.pos, movement_mat_);
     }
     return result;
 }
@@ -109,14 +109,9 @@ std::vector<Triangle> Camera::clipTriangle(const Triangle& triangle) const {
         return {};
     }
 
-    // Create macro for this?
     assert(
         vertices.size() >= 3 &&
         "Triangle clipping result has inadequate vertex count");
-    if (vertices.size() < 3) {
-        throw std::runtime_error(
-            "Triangle clipping failed: inadequate vertex count");
-    }
     std::vector<Triangle> result;
     result.reserve(vertices.size() - 2);
     for (size_t i = 2; i < vertices.size(); i++) {

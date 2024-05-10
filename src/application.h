@@ -16,9 +16,10 @@ public:
 
 private:
     void createScene();
-    void checkWindowClosing();
-    FrameMovement getUserInputs(double delta_time);
-    void drawFrame();
+
+    FrameMovement calculateCameraMovement(double delta_time) const;
+    void draw(const Image& image);
+    void closeWindowIfAsked();
 
     sf::RenderWindow render_window_;
     Renderer renderer_;

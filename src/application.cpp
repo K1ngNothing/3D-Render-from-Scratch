@@ -17,30 +17,20 @@ void Application::run() {
     sf::Clock frame_clock;
     while (render_window_.isOpen()) {
         double delta_time = frame_clock.restart().asSeconds();
-        FrameMovement camera_movement = getUserInputs(delta_time);
+        FrameMovement camera_movement = calculateCameraMovement(delta_time);
         camera_.moveCamera(camera_movement);
-        drawFrame();
-        checkWindowClosing();
+        Image image = renderer_.renderImage(camera_, world_);
+        draw(image);
+        closeWindowIfAsked();
     }
 }
 
 void Application::createScene() {
-    // world_.addObject(std::move(createGradientPyramid()));
-    world_.addObject(std::move(createObamaPyramid(world_)));
+    // world_.addObject(createGradientPyramid());
+    world_.addObject(createEgyptianPyramid(world_));
 }
 
-void Application::checkWindowClosing() {
-    sf::Event event;
-    while (render_window_.pollEvent(event)) {
-        if (event.type == sf::Event::Closed ||
-            (event.KeyPressed && event.key.code == sf::Keyboard::Escape)) {
-            render_window_.close();
-            return;
-        }
-    }
-}
-
-FrameMovement Application::getUserInputs(double delta_time) {
+FrameMovement Application::calculateCameraMovement(double delta_time) const {
     double movement_val = settings::k_camera_movement_speed * delta_time;
     double turning_val = settings::k_camera_turning_speed * delta_time;
 
@@ -92,10 +82,20 @@ FrameMovement Application::getUserInputs(double delta_time) {
         .turn_clockwise = turn_clockwise};
 }
 
-void Application::drawFrame() {
-    Image image = renderer_.renderImage(camera_, world_);
+void Application::draw(const Image& image) {
     render_window_.draw(&image[0], image.size(), sf::PrimitiveType::Points);
     render_window_.display();
+}
+
+void Application::closeWindowIfAsked() {
+    sf::Event event;
+    while (render_window_.pollEvent(event)) {
+        if (event.type == sf::Event::Closed ||
+            (event.KeyPressed && event.key.code == sf::Keyboard::Escape)) {
+            render_window_.close();
+            return;
+        }
+    }
 }
 
 }  // namespace render_app
