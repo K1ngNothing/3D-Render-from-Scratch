@@ -58,11 +58,15 @@ Object createObamaPyramid(World& world) {
         world.loadTextureFromFile("../../resources/textures/obama.jpg");
     auto [obama_w, obama_h] = obama_ptr->getSize();
     std::vector<TextureCoords> obama_coords{
-        TextureCoords{          0, obama_h - 1, obama_ptr},
-        TextureCoords{          0,           0, obama_ptr},
-        TextureCoords{obama_w - 1,           0, obama_ptr},
-        TextureCoords{obama_w - 1, obama_h - 1, obama_ptr},
-        TextureCoords{obama_w / 2, obama_h / 2, obama_ptr},
+        TextureCoords{         0, static_cast<double>(obama_h) - 1,obama_ptr                                                                                         },
+        TextureCoords{                               0,                                0, obama_ptr},
+        TextureCoords{static_cast<double>(obama_w) - 1,                                0, obama_ptr},
+        TextureCoords{
+                      static_cast<double>(obama_w) - 1, static_cast<double>(obama_h) - 1,
+                      obama_ptr                                                                    },
+        TextureCoords{
+                      static_cast<double>(obama_w) / 2, static_cast<double>(obama_h) / 2,
+                      obama_ptr                                                                    },
     };
 
     auto createFaceTextures = [&obama_coords](
@@ -97,12 +101,17 @@ Object createEgyptianPyramid(World& world) {
     const sf::Image* pyramid_ptr =
         world.loadTextureFromFile("../../resources/textures/pyramid.jpg");
     auto [pyramid_w, pyramid_h] = pyramid_ptr->getSize();
+
     std::vector<TextureCoords> pyramid_coords{
-        TextureCoords{            0, pyramid_h - 1, pyramid_ptr},
-        TextureCoords{            0,             0, pyramid_ptr},
-        TextureCoords{pyramid_w - 1,             0, pyramid_ptr},
-        TextureCoords{pyramid_w - 1, pyramid_h - 1, pyramid_ptr},
-        TextureCoords{pyramid_w / 2, pyramid_h / 2, pyramid_ptr},
+        TextureCoords{           0,static_cast<double>(pyramid_h) - 1, pyramid_ptr                                                         },
+        TextureCoords{                                 0,                                  0, pyramid_ptr},
+        TextureCoords{static_cast<double>(pyramid_w) - 1,                                  0, pyramid_ptr},
+        TextureCoords{
+                      static_cast<double>(pyramid_w) - 1,
+                      static_cast<double>(pyramid_h) - 1, pyramid_ptr                                    },
+        TextureCoords{
+                      static_cast<double>(pyramid_w) / 2,
+                      static_cast<double>(pyramid_h) / 2, pyramid_ptr                                    },
     };
 
     auto createFaceTextures = [&pyramid_coords](

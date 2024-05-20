@@ -40,6 +40,8 @@ public:
         std::ostream& os, const HTriangle& h_triangle);
 
 private:
+    void sortHVerticesByYCoordinate();
+
     // stores vertices in descending y order
     std::array<HVertex, 3> h_vertices_;
 };

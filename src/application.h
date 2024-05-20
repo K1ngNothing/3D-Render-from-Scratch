@@ -17,7 +17,12 @@ public:
 private:
     void createScene();
 
-    FrameMovement calculateCameraMovement(double delta_time) const;
+    FrameMovement getCameraMovementFromKeyboard() const;
+    Point3 getCameraShiftFromKeyboard() const;
+    double getCameraPitchFromKeyboard() const;
+    double getCameraYawFromKeyboard() const;
+    double getCameraRollFromKeyboard() const;
+
     void draw(const Image& image);
     void closeWindowIfAsked();
 

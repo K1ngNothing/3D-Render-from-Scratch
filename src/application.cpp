@@ -16,8 +16,8 @@ Application::Application()
 void Application::run() {
     sf::Clock frame_clock;
     while (render_window_.isOpen()) {
-        double delta_time = frame_clock.restart().asSeconds();
-        FrameMovement camera_movement = calculateCameraMovement(delta_time);
+        FrameMovement camera_movement = getCameraMovementFromKeyboard();
+        camera_movement *= frame_clock.restart().asSeconds();
         camera_.moveCamera(camera_movement);
         Image image = renderer_.renderImage(camera_, world_);
         draw(image);
@@ -30,56 +30,68 @@ void Application::createScene() {
     world_.addObject(createEgyptianPyramid(world_));
 }
 
-FrameMovement Application::calculateCameraMovement(double delta_time) const {
-    double movement_val = settings::k_camera_movement_speed * delta_time;
-    double turning_val = settings::k_camera_turning_speed * delta_time;
+FrameMovement Application::getCameraMovementFromKeyboard() const {
+    return FrameMovement{
+        .shift = getCameraShiftFromKeyboard(),
+        .pitch = getCameraPitchFromKeyboard(),
+        .yaw = getCameraYawFromKeyboard(),
+        .roll = getCameraRollFromKeyboard()};
+}
 
-    // movement
+Point3 Application::getCameraShiftFromKeyboard() const {
     Point3 shift = Point3::Zero();
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-        shift.z() -= movement_val;
+        shift.z() -= settings::k_camera_movement_speed;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-        shift.z() += movement_val;
+        shift.z() += settings::k_camera_movement_speed;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-        shift.x() += movement_val;
+        shift.x() += settings::k_camera_movement_speed;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        shift.x() -= movement_val;
+        shift.x() -= settings::k_camera_movement_speed;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-        shift.y() += movement_val;
+        shift.y() += settings::k_camera_movement_speed;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
-        shift.y() -= movement_val;
+        shift.y() -= settings::k_camera_movement_speed;
     }
+    return shift;
+}
 
-    // turning
-    double turn_up = 0, turn_right = 0, turn_clockwise = 0;
+double Application::getCameraPitchFromKeyboard() const {
+    double pitch = 0.0;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-        turn_up += turning_val;
+        pitch += settings::k_camera_turning_speed;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-        turn_up -= turning_val;
+        pitch -= settings::k_camera_turning_speed;
     }
+    return pitch;
+}
+
+double Application::getCameraYawFromKeyboard() const {
+    double yaw = 0.0;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-        turn_right += turning_val;
+        yaw += settings::k_camera_turning_speed;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-        turn_right -= turning_val;
+        yaw -= settings::k_camera_turning_speed;
     }
+    return yaw;
+}
+
+double Application::getCameraRollFromKeyboard() const {
+    double roll = 0.0;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
-        turn_clockwise += turning_val;
+        roll += settings::k_camera_turning_speed;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-        turn_clockwise -= turning_val;
+        roll -= settings::k_camera_turning_speed;
     }
-    return FrameMovement{
-        .shift = shift,
-        .turn_up = turn_up,
-        .turn_right = turn_right,
-        .turn_clockwise = turn_clockwise};
+    return roll;
 }
 
 void Application::draw(const Image& image) {

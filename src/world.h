@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <vector>
 
 #include "object.h"
@@ -14,7 +15,7 @@ private:
     friend class World;
 
 public:
-    Triangles(const World& world_ref);
+    Triangles(const World& world);
 
     Iterator begin() const;
     Iterator end() const;
@@ -29,14 +30,15 @@ private:
         bool operator==(Iterator other) const;
         bool operator!=(Iterator other) const;
         const Triangle& operator*() const;
+        const Triangle* operator->() const;
 
     private:
-        const World& world_ref_;
+        std::reference_wrapper<const World> world_;
         size_t object_id_;
         size_t triangle_id_;
     };
 
-    const World& world_ref_;
+    std::reference_wrapper<const World> world_;
 };
 
 class World {
@@ -44,7 +46,7 @@ class World {
 
 public:
     void addObject(Object&& object);
-    Triangles getTriangles() const;
+    Triangles triangles() const;
     const sf::Image* loadTextureFromFile(const std::string filename);
 
 private:

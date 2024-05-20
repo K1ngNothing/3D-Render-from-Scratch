@@ -4,31 +4,31 @@ namespace render_app {
 
 // ----- Triangles -----
 
-Triangles::Triangles(const World& world_ref) : world_ref_(world_ref) {
+Triangles::Triangles(const World& world_ref) : world_(world_ref) {
 }
 
 Triangles::Iterator Triangles::begin() const {
-    return Iterator(world_ref_, 0, 0);
+    return Iterator(world_, 0, 0);
 }
 
 Triangles::Iterator Triangles::end() const {
-    return Iterator(world_ref_, world_ref_.objects.size(), 0);
+    return Iterator(world_, world_.get().objects.size(), 0);
 }
 
 size_t Triangles::size() const {
-    return world_ref_.triangle_count_;
+    return world_.get().triangle_count_;
 }
 
 // ----- Triangles::Iterator -----
 
 Triangles::Iterator::Iterator(
     const World& world, size_t object_id, size_t triangle_id)
-    : world_ref_(world), object_id_(object_id), triangle_id_(triangle_id) {
+    : world_(world), object_id_(object_id), triangle_id_(triangle_id) {
 }
 
 Triangles::Iterator& Triangles::Iterator::operator++() {
     ++triangle_id_;
-    if (world_ref_.objects[object_id_].triangles().size() == triangle_id_) {
+    if (world_.get().objects[object_id_].triangles().size() == triangle_id_) {
         triangle_id_ = 0;
         ++object_id_;
     }
@@ -45,11 +45,17 @@ bool Triangles::Iterator::operator==(Iterator other) const {
     return (
         triangle_id_ == other.triangle_id_ && object_id_ == other.object_id_);
 }
+
 bool Triangles::Iterator::operator!=(Iterator other) const {
     return !(*this == other);
 }
+
 const Triangle& Triangles::Iterator::operator*() const {
-    return world_ref_.objects[object_id_].triangles()[triangle_id_];
+    return world_.get().objects[object_id_].triangles()[triangle_id_];
+}
+
+const Triangle* Triangles::Iterator::operator->() const {
+    return &world_.get().objects[object_id_].triangles()[triangle_id_];
 }
 
 // ----- World -----
@@ -59,7 +65,7 @@ void World::addObject(Object&& object) {
     objects.push_back(std::move(object));
 }
 
-Triangles World::getTriangles() const {
+Triangles World::triangles() const {
     return Triangles(*this);
 }
 

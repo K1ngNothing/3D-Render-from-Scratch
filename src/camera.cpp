@@ -48,7 +48,7 @@ Camera::Camera()
 
 std::vector<HTriangle> Camera::transformWorldTriangles(
     const World& world) const {
-    Triangles triangles = world.getTriangles();
+    Triangles triangles = world.triangles();
     std::vector<HTriangle> result;
     result.reserve(triangles.size());
     for (const Triangle& triangle : triangles) {

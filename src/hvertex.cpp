@@ -43,15 +43,7 @@ std::ostream& operator<<(std::ostream& os, const HVertex& h_vertex) {
 
 HTriangle::HTriangle(const HVertex& A, const HVertex& B, const HVertex& C)
     : h_vertices_({A, B, C}) {
-    if (h_vertices_[0].hPosition().y() < h_vertices_[1].hPosition().y()) {
-        std::swap(h_vertices_[0], h_vertices_[1]);
-    }
-    if (h_vertices_[0].hPosition().y() < h_vertices_[2].hPosition().y()) {
-        std::swap(h_vertices_[0], h_vertices_[2]);
-    }
-    if (h_vertices_[1].hPosition().y() < h_vertices_[2].hPosition().y()) {
-        std::swap(h_vertices_[1], h_vertices_[2]);
-    }
+    sortHVerticesByYCoordinate();
 }
 
 const std::array<HVertex, 3>& HTriangle::hVertices() const {
@@ -63,6 +55,18 @@ std::ostream& operator<<(std::ostream& os, const HTriangle& h_triangle) {
         os << h_vertex << "\n";
     }
     return os;
+}
+
+void HTriangle::sortHVerticesByYCoordinate() {
+    if (h_vertices_[0].hPosition().y() < h_vertices_[1].hPosition().y()) {
+        std::swap(h_vertices_[0], h_vertices_[1]);
+    }
+    if (h_vertices_[0].hPosition().y() < h_vertices_[2].hPosition().y()) {
+        std::swap(h_vertices_[0], h_vertices_[2]);
+    }
+    if (h_vertices_[1].hPosition().y() < h_vertices_[2].hPosition().y()) {
+        std::swap(h_vertices_[1], h_vertices_[2]);
+    }
 }
 
 }  // namespace render_app
