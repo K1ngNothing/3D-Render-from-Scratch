@@ -69,17 +69,21 @@ Triangles World::triangles() const {
     return Triangles(*this);
 }
 
-const sf::Image* World::loadTextureFromFile(const std::string filename) {
-    auto it = textures_.find(filename);
-    if (it != textures_.end()) {
-        return &it->second;
-    }
-    sf::Image& texture = textures_[filename];
+std::optional<size_t> World::loadTextureFromFile(
+    const std::filesystem::path& filename) {
+    sf::Image texture;
     if (!texture.loadFromFile(filename)) {
-        throw std::runtime_error(
-            "TextureManager::loadFromFile: invalid filename");
+        return std::nullopt;
     }
-    return &texture;
+    textures_.push_back(std::move(texture));
+    return textures_.size() - 1;
+}
+
+const sf::Image* World::getTexture(size_t id) const {
+    if (textures_.size() <= id) {
+        return nullptr;
+    }
+    return &textures_[id];
 }
 
 }  // namespace render_app

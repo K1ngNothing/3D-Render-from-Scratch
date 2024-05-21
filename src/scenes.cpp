@@ -54,20 +54,23 @@ Object createObamaPyramid(World& world) {
     Point3 E{0, 2, -4};
 
     // path is relative to build folder
-    const sf::Image* obama_ptr =
+    std::optional<size_t> texture_id =
         world.loadTextureFromFile("../../resources/textures/obama.jpg");
+    if (!texture_id) {
+        throw std::runtime_error("Texture not found");
+    }
+    const sf::Image* obama_ptr = world.getTexture(texture_id.value());
+
     auto [obama_w, obama_h] = obama_ptr->getSize();
+    // clang-format off
     std::vector<TextureCoords> obama_coords{
-        TextureCoords{         0, static_cast<double>(obama_h) - 1,obama_ptr                                                                                         },
-        TextureCoords{                               0,                                0, obama_ptr},
-        TextureCoords{static_cast<double>(obama_w) - 1,                                0, obama_ptr},
-        TextureCoords{
-                      static_cast<double>(obama_w) - 1, static_cast<double>(obama_h) - 1,
-                      obama_ptr                                                                    },
-        TextureCoords{
-                      static_cast<double>(obama_w) / 2, static_cast<double>(obama_h) / 2,
-                      obama_ptr                                                                    },
+        TextureCoords{0, static_cast<double>(obama_h) - 1, obama_ptr},
+        TextureCoords{0, 0, obama_ptr},
+        TextureCoords{static_cast<double>(obama_w) - 1, 0, obama_ptr},
+        TextureCoords{static_cast<double>(obama_w) - 1, static_cast<double>(obama_h) - 1, obama_ptr},
+        TextureCoords{static_cast<double>(obama_w) / 2, static_cast<double>(obama_h) / 2, obama_ptr},
     };
+    // clang-format on
 
     auto createFaceTextures = [&obama_coords](
                                   const Point3& A, const Point3& B,
@@ -98,21 +101,23 @@ Object createEgyptianPyramid(World& world) {
     Point3 E{0, 2, -4};
 
     // path is relative to build folder
-    const sf::Image* pyramid_ptr =
+    std::optional<size_t> texture_id =
         world.loadTextureFromFile("../../resources/textures/pyramid.jpg");
+    if (!texture_id) {
+        throw std::runtime_error("Texture not found");
+    }
+    const sf::Image* pyramid_ptr = world.getTexture(texture_id.value());
     auto [pyramid_w, pyramid_h] = pyramid_ptr->getSize();
 
+    // clang-format off
     std::vector<TextureCoords> pyramid_coords{
-        TextureCoords{           0,static_cast<double>(pyramid_h) - 1, pyramid_ptr                                                         },
-        TextureCoords{                                 0,                                  0, pyramid_ptr},
-        TextureCoords{static_cast<double>(pyramid_w) - 1,                                  0, pyramid_ptr},
-        TextureCoords{
-                      static_cast<double>(pyramid_w) - 1,
-                      static_cast<double>(pyramid_h) - 1, pyramid_ptr                                    },
-        TextureCoords{
-                      static_cast<double>(pyramid_w) / 2,
-                      static_cast<double>(pyramid_h) / 2, pyramid_ptr                                    },
+        TextureCoords{0, static_cast<double>(pyramid_h) - 1, pyramid_ptr},
+        TextureCoords{0, 0, pyramid_ptr},
+        TextureCoords{static_cast<double>(pyramid_w) - 1, 0, pyramid_ptr},
+        TextureCoords{static_cast<double>(pyramid_w) - 1, static_cast<double>(pyramid_h) - 1, pyramid_ptr},
+        TextureCoords{static_cast<double>(pyramid_w) / 2, static_cast<double>(pyramid_h) / 2, pyramid_ptr},
     };
+    // clang-format on
 
     auto createFaceTextures = [&pyramid_coords](
                                   const Point3& A, const Point3& B,

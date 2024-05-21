@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <functional>
 #include <vector>
 
@@ -47,11 +48,13 @@ class World {
 public:
     void addObject(Object&& object);
     Triangles triangles() const;
-    const sf::Image* loadTextureFromFile(const std::string filename);
+    std::optional<size_t> loadTextureFromFile(
+        const std::filesystem::path& filename);
+    const sf::Image* getTexture(size_t id) const;
 
 private:
     std::vector<Object> objects;
-    std::map<std::string, sf::Image> textures_;
+    std::vector<sf::Image> textures_;
     size_t triangle_count_ = 0;
 };
 
