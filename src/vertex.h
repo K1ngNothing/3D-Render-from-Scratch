@@ -20,8 +20,7 @@ inline Vertex interpolate(const Vertex& A, const Vertex& B, double t) {
     assert(inRange(t, -g_eps, 1.0 + g_eps) && "Bad interpolating coefficient");
 
     return Vertex{
-        .pos = A.pos * (1 - t) + B.pos * t,
-        .attr = interpolate(A.attr, B.attr, 1 - t, t)};
+        .pos = A.pos * (1 - t) + B.pos * t, .attr = interpolate(A.attr, B.attr, 1 - t, t)};
 }
 
 inline std::ostream& operator<<(std::ostream& os, const Vertex& vert) {

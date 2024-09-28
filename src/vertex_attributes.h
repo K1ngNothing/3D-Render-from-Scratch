@@ -14,23 +14,19 @@ struct VertexAttributes {
 };
 
 inline VertexAttributes interpolate(
-    const VertexAttributes& A, const VertexAttributes& B, double t1,
-    double t2) {
+    const VertexAttributes& A, const VertexAttributes& B, double t1, double t2) {
     VertexAttributes result;
     if (A.color.has_value() && B.color.has_value()) {
         result.color = A.color.value() * t1 + B.color.value() * t2;
     }
     if (A.tcoords.has_value() && B.tcoords.has_value()) {
-        assert(
-            A.tcoords->image_ptr == B.tcoords->image_ptr &&
-            "Bad texture interpolation");
+        assert(A.tcoords->image_ptr == B.tcoords->image_ptr && "Bad texture interpolation");
         result.tcoords = A.tcoords.value() * t1 + B.tcoords.value() * t2;
     }
     return result;
 }
 
-inline std::ostream& operator<<(
-    std::ostream& os, const VertexAttributes& attr) {
+inline std::ostream& operator<<(std::ostream& os, const VertexAttributes& attr) {
     if (attr.color.has_value()) {
         os << ", color: " << attr.color.value();
     }

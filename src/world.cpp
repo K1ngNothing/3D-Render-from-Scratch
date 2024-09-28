@@ -21,8 +21,7 @@ size_t Triangles::size() const {
 
 // ----- Triangles::Iterator -----
 
-Triangles::Iterator::Iterator(
-    const World& world, size_t object_id, size_t triangle_id)
+Triangles::Iterator::Iterator(const World& world, size_t object_id, size_t triangle_id)
     : world_(world), object_id_(object_id), triangle_id_(triangle_id) {
 }
 
@@ -42,8 +41,7 @@ Triangles::Iterator Triangles::Iterator::operator++(int) {
 }
 
 bool Triangles::Iterator::operator==(Iterator other) const {
-    return (
-        triangle_id_ == other.triangle_id_ && object_id_ == other.object_id_);
+    return (triangle_id_ == other.triangle_id_ && object_id_ == other.object_id_);
 }
 
 bool Triangles::Iterator::operator!=(Iterator other) const {
@@ -69,8 +67,7 @@ Triangles World::triangles() const {
     return Triangles(*this);
 }
 
-std::optional<size_t> World::loadTextureFromFile(
-    const std::filesystem::path& filename) {
+std::optional<size_t> World::loadTextureFromFile(const std::filesystem::path& filename) {
     sf::Image texture;
     if (!texture.loadFromFile(filename)) {
         return std::nullopt;

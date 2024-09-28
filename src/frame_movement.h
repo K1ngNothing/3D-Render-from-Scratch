@@ -9,10 +9,14 @@ struct FrameMovement {
     double pitch;
     double yaw;
     double roll;
+
+    FrameMovement operator-() const;
+    FrameMovement& operator*=(double scalar);
+    bool operator==(const FrameMovement& other) const = default;
 };
 
-FrameMovement operator-(const FrameMovement& movement);
-FrameMovement& operator*=(FrameMovement& movement, double scalar);
+
+FrameMovement emptyMovement();
 
 Matrix4 translateMovementToMatrix(const FrameMovement& movement);
 

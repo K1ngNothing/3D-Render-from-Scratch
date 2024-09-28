@@ -3,13 +3,11 @@
 #include <cassert>
 
 #include "settings.h"
-#include "utils.h"
 
 namespace render_app {
 
 namespace {
-Vertex intersectEdgeWithPlane(
-    const Vertex& A, const Vertex& B, const Plane& plane) {
+Vertex intersectEdgeWithPlane(const Vertex& A, const Vertex& B, const Plane& plane) {
     const Point3 norm = plane.head(3);
     const double d = plane.w();
     double denominator = A.pos.dot(norm) - B.pos.dot(norm);
@@ -19,8 +17,7 @@ Vertex intersectEdgeWithPlane(
     return interpolate(A, B, t);
 }
 
-std::vector<Vertex> clipWithPlane(
-    const std::vector<Vertex>& vertices, const Plane& plane) {
+std::vector<Vertex> clipWithPlane(const std::vector<Vertex>& vertices, const Plane& plane) {
     // Sutherland–Hodgman algorithm
     assert(vertices.size() >= 3 || vertices.empty());
     std::vector<Vertex> result;
@@ -46,8 +43,7 @@ Camera::Camera()
       clipping_planes_(constructClippingPlanes()) {
 }
 
-std::vector<HTriangle> Camera::transformWorldTriangles(
-    const World& world) const {
+std::vector<HTriangle> Camera::transformWorldTriangles(const World& world) const {
     Triangles triangles = world.triangles();
     std::vector<HTriangle> result;
     result.reserve(triangles.size());
@@ -70,14 +66,12 @@ HVertex Camera::transformVertex(const Vertex& P) const {
     Point3 new_pos = Q_transformed.head(3) / Q_transformed.w();
     double z_rec = 1.0 / Q_transformed.w();
     assert(
-        inRange(new_pos.x(), -1, 1) && inRange(new_pos.y(), -1, 1) &&
-        inRange(new_pos.z(), -1, 1) && z_rec > 0 &&
-        "vertex transformation failed :(");
+        inRange(new_pos.x(), -1, 1) && inRange(new_pos.y(), -1, 1) && inRange(new_pos.z(), -1, 1) &&
+        z_rec > 0 && "vertex transformation failed :(");
     return HVertex(new_pos, z_rec, P.attr);
 }
 
-std::vector<HTriangle> Camera::transformTriangle(
-    const Triangle& triangle) const {
+std::vector<HTriangle> Camera::transformTriangle(const Triangle& triangle) const {
     Triangle shifted_triangle = moveTriangleToCameraSpace(triangle);
     std::vector<Triangle> clipped_triangles = clipTriangle(shifted_triangle);
     std::vector<HTriangle> result;
@@ -100,8 +94,7 @@ Triangle Camera::moveTriangleToCameraSpace(const Triangle& triangle) const {
 }
 
 std::vector<Triangle> Camera::clipTriangle(const Triangle& triangle) const {
-    std::vector<Vertex> vertices{
-        triangle.vertices.begin(), triangle.vertices.end()};
+    std::vector<Vertex> vertices{triangle.vertices.begin(), triangle.vertices.end()};
     for (const Plane& plane : clipping_planes_) {
         vertices = clipWithPlane(vertices, plane);
     }
@@ -109,9 +102,7 @@ std::vector<Triangle> Camera::clipTriangle(const Triangle& triangle) const {
         return {};
     }
 
-    assert(
-        vertices.size() >= 3 &&
-        "Triangle clipping result has inadequate vertex count");
+    assert(vertices.size() >= 3 && "Triangle clipping result has inadequate vertex count");
     std::vector<Triangle> result;
     result.reserve(vertices.size() - 2);
     for (size_t i = 2; i < vertices.size(); i++) {

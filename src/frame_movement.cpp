@@ -2,20 +2,30 @@
 
 namespace render_app {
 
-FrameMovement operator-(const FrameMovement& movement) {
+FrameMovement FrameMovement::operator-() const {
     return FrameMovement{
-        .shift = -movement.shift,
-        .pitch = -movement.pitch,
-        .yaw = -movement.yaw,
-        .roll = -movement.roll};
+        .shift = -shift,
+        .pitch = -pitch,
+        .yaw = -yaw,
+        .roll = -roll
+    };
 }
 
-FrameMovement& operator*=(FrameMovement& movement, double scalar) {
-    movement.shift *= scalar;
-    movement.pitch *= scalar;
-    movement.yaw *= scalar;
-    movement.roll *= scalar;
-    return movement;
+FrameMovement& FrameMovement::operator*=(double scalar) {
+    shift *= scalar;
+    pitch *= scalar;
+    yaw *= scalar;
+    roll *= scalar;
+    return *this;
+}
+
+FrameMovement emptyMovement() {
+    return FrameMovement{
+        .shift = Point3::Zero(),
+        .pitch = 0.0,
+        .yaw = 0.0,
+        .roll = 0.0
+    };
 }
 
 Matrix4 translateMovementToMatrix(const FrameMovement& movement) {

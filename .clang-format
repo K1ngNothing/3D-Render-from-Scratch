@@ -1,7 +1,7 @@
 BasedOnStyle: Google
 IndentWidth: 4
 AccessModifierOffset: -4
-ColumnLimit: 80
+ColumnLimit: 100
 AllowShortFunctionsOnASingleLine: None
 SortIncludes: CaseInsensitive
 InsertNewlineAtEOF: true

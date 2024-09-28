@@ -1,5 +1,7 @@
 #pragma once
 
+#include <optional>
+
 #include <SFML/Graphics.hpp>
 
 #include "camera.h"
@@ -17,7 +19,7 @@ public:
 private:
     void createScene();
 
-    FrameMovement getCameraMovementFromKeyboard() const;
+    std::optional<FrameMovement> getCameraMovementFromKeyboard() const;
     Point3 getCameraShiftFromKeyboard() const;
     double getCameraPitchFromKeyboard() const;
     double getCameraYawFromKeyboard() const;

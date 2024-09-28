@@ -11,9 +11,7 @@ namespace render_app {
 
 class HVertex {
 public:
-    HVertex(
-        const Point3& h_position, double z_reciprocal,
-        const VertexAttributes& attr);
+    HVertex(const Point3& h_position, double z_reciprocal, const VertexAttributes& attr);
     Point3 hPosition() const;
     sf::Color calculateColor() const;
 
@@ -36,8 +34,7 @@ public:
     HTriangle(const HVertex& A, const HVertex& B, const HVertex& C);
 
     const std::array<HVertex, 3>& hVertices() const;
-    friend std::ostream& operator<<(
-        std::ostream& os, const HTriangle& h_triangle);
+    friend std::ostream& operator<<(std::ostream& os, const HTriangle& h_triangle);
 
 private:
     void sortHVerticesByYCoordinate();

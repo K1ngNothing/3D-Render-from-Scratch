@@ -37,8 +37,7 @@ inline Point3 transformVec(const Point3& vec, const Matrix4 mat) {
 }
 
 inline Side getSide(const Point3& point, const Plane& plane) {
-    return point.dot(plane.head(3)) + plane.w() > -g_eps ? Side::Inner
-                                                         : Side::Outer;
+    return point.dot(plane.head(3)) + plane.w() > -g_eps ? Side::Inner : Side::Outer;
 }
 
 }  // namespace render_app

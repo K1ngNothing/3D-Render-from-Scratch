@@ -48,8 +48,7 @@ class World {
 public:
     void addObject(Object&& object);
     Triangles triangles() const;
-    std::optional<size_t> loadTextureFromFile(
-        const std::filesystem::path& filename);
+    std::optional<size_t> loadTextureFromFile(const std::filesystem::path& filename);
     const sf::Image* getTexture(size_t id) const;
 
 private:

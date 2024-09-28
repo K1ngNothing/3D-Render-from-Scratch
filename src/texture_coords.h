@@ -11,8 +11,7 @@ struct TextureCoords {
     const sf::Image* image_ptr;
 
     sf::Color getColor() const {
-        return image_ptr->getPixel(
-            static_cast<unsigned int>(x), static_cast<unsigned int>(y));
+        return image_ptr->getPixel(static_cast<unsigned int>(x), static_cast<unsigned int>(y));
     }
 };
 
@@ -24,8 +23,7 @@ inline TextureCoords operator*(const TextureCoords& tcoords, double t) {
     };
 }
 
-inline TextureCoords operator+(
-    const TextureCoords& tcoords1, const TextureCoords& tcoords2) {
+inline TextureCoords operator+(const TextureCoords& tcoords1, const TextureCoords& tcoords2) {
     assert(tcoords1.image_ptr == tcoords2.image_ptr);
     return TextureCoords{
         .x = tcoords1.x + tcoords2.x,
@@ -34,8 +32,7 @@ inline TextureCoords operator+(
     };
 }
 
-inline std::ostream& operator<<(
-    std::ostream& os, const TextureCoords& tcoords) {
+inline std::ostream& operator<<(std::ostream& os, const TextureCoords& tcoords) {
     return os << "(" << tcoords.x << ", " << tcoords.y << ")";
 }
 

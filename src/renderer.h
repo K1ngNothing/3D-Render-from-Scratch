@@ -21,14 +21,12 @@ private:
     };
     using ZBuffer = Container2d<Pixel>;
 
-    std::vector<HTriangle> createHTriangles(
-        const Camera& camera, const World& world);
+    std::vector<HTriangle> createHTriangles(const Camera& camera, const World& world);
     ZBuffer constructZBuffer(const std::vector<HTriangle>& h_triangles);
     std::vector<sf::Vertex> createImage(const ZBuffer& z_buffer);
 
     void rasterizeHTriangle(const HTriangle& h_triangle, ZBuffer& z_buffer);
-    void doScanlineIteration(
-        size_t row, HVertex left, HVertex right, ZBuffer& z_buffer);
+    void doScanlineIteration(size_t row, HVertex left, HVertex right, ZBuffer& z_buffer);
 };
 
 }  // namespace render_app

@@ -7,21 +7,28 @@ namespace render_app {
 
 Application::Application()
     : render_window_(
-          sf::VideoMode(settings::k_window_w, settings::k_window_h),
-          settings::window_name) {
+          sf::VideoMode(settings::k_window_w, settings::k_window_h), settings::window_name) {
     render_window_.setFramerateLimit(settings::k_framerate_limit);
     createScene();
 }
 
 void Application::run() {
     sf::Clock frame_clock;
+    bool isFirstFrame = true;
     while (render_window_.isOpen()) {
-        FrameMovement camera_movement = getCameraMovementFromKeyboard();
-        camera_movement *= frame_clock.restart().asSeconds();
-        camera_.moveCamera(camera_movement);
-        Image image = renderer_.renderImage(camera_, world_);
-        draw(image);
+        std::optional<FrameMovement> camera_movement = getCameraMovementFromKeyboard();
+        float time_scince_last_frame = frame_clock.restart().asSeconds();
+
+        if (camera_movement.has_value()) {
+            camera_movement.value() *= time_scince_last_frame;
+            camera_.moveCamera(camera_movement.value());
+        }
+        if (isFirstFrame || camera_movement.has_value()) {
+            draw(renderer_.renderImage(camera_, world_));
+        }
+
         closeWindowIfAsked();
+        isFirstFrame = false;
     }
 }
 
@@ -30,12 +37,17 @@ void Application::createScene() {
     world_.addObject(createEgyptianPyramid(world_));
 }
 
-FrameMovement Application::getCameraMovementFromKeyboard() const {
-    return FrameMovement{
+std::optional<FrameMovement> Application::getCameraMovementFromKeyboard() const {
+    FrameMovement result{
         .shift = getCameraShiftFromKeyboard(),
         .pitch = getCameraPitchFromKeyboard(),
         .yaw = getCameraYawFromKeyboard(),
-        .roll = getCameraRollFromKeyboard()};
+        .roll = getCameraRollFromKeyboard()
+    };
+    if (result == emptyMovement()) {
+        return std::nullopt;
+    }
+    return result;
 }
 
 Point3 Application::getCameraShiftFromKeyboard() const {

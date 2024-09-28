@@ -13,8 +13,8 @@ Triangle createTriangleTextures(
 }
 
 Triangle createTriangleColors(
-    const Point3& A, const Point3& B, const Point3& C, const sf::Color& c1,
-    const sf::Color& c2, const sf::Color& c3) {
+    const Point3& A, const Point3& B, const Point3& C, const sf::Color& c1, const sf::Color& c2,
+    const sf::Color& c3) {
     return Triangle{
         Vertex{.pos = A, .attr = VertexAttributes{.color = c1}},
         Vertex{.pos = B, .attr = VertexAttributes{.color = c2}},
@@ -31,10 +31,8 @@ Object createGradientPyramid() {
     Point3 D{2, 0, -6};
     Point3 E{0, 2, -4};
 
-    auto createTriangleGradient = [](const Point3& A, const Point3& B,
-                                     const Point3& C) {
-        return createTriangleColors(
-            A, B, C, sf::Color::Red, sf::Color::Green, sf::Color::Blue);
+    auto createTriangleGradient = [](const Point3& A, const Point3& B, const Point3& C) {
+        return createTriangleColors(A, B, C, sf::Color::Red, sf::Color::Green, sf::Color::Blue);
     };
 
     std::vector<Triangle> triangles = {
@@ -73,9 +71,8 @@ Object createObamaPyramid(World& world) {
     // clang-format on
 
     auto createFaceTextures = [&obama_coords](
-                                  const Point3& A, const Point3& B,
-                                  const Point3& C, size_t t1, size_t t2,
-                                  size_t t3) {
+                                  const Point3& A, const Point3& B, const Point3& C, size_t t1,
+                                  size_t t2, size_t t3) {
         return createTriangleTextures(
             A, B, C, obama_coords[t1], obama_coords[t2], obama_coords[t3]);
     };
@@ -120,12 +117,10 @@ Object createEgyptianPyramid(World& world) {
     // clang-format on
 
     auto createFaceTextures = [&pyramid_coords](
-                                  const Point3& A, const Point3& B,
-                                  const Point3& C, size_t t1, size_t t2,
-                                  size_t t3) {
+                                  const Point3& A, const Point3& B, const Point3& C, size_t t1,
+                                  size_t t2, size_t t3) {
         return createTriangleTextures(
-            A, B, C, pyramid_coords[t1], pyramid_coords[t2],
-            pyramid_coords[t3]);
+            A, B, C, pyramid_coords[t1], pyramid_coords[t2], pyramid_coords[t3]);
     };
 
     sf::Color yellow{242, 208, 114};

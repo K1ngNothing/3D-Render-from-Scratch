@@ -23,8 +23,8 @@ inline sf::Color operator*(const sf::Color& color, double coeff) {
 }
 
 inline std::ostream& operator<<(std::ostream& os, const sf::Color& color) {
-    os << "(" << static_cast<int>(color.r) << ", " << static_cast<int>(color.g)
-       << ", " << static_cast<int>(color.b) << ")";
+    os << "(" << static_cast<int>(color.r) << ", " << static_cast<int>(color.g) << ", "
+       << static_cast<int>(color.b) << ")";
     return os;
 }
 
@@ -42,8 +42,7 @@ inline std::ostream& operator<<(std::ostream& os, const Point3& point) {
 }
 
 inline std::ostream& operator<<(std::ostream& os, const Point4& point) {
-    os << "(" << point.x() << ", " << point.y() << ", " << point.z() << ", "
-       << point.w() << ")";
+    os << "(" << point.x() << ", " << point.y() << ", " << point.z() << ", " << point.w() << ")";
     return os;
 }
 
