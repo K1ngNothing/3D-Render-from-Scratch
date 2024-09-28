@@ -6,6 +6,9 @@
 
 namespace render_app {
 
+// Static members initialization
+const sf::Color Renderer::Pixel::k_background_color = sf::Color::Black;
+
 namespace {
 
 struct PixelCoords {
