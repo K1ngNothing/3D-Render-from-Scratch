@@ -2,13 +2,13 @@
 
 #include <array>
 
-#include "frame_movement.h"
-#include "geometry.h"
-#include "hvertex.h"
-#include "vertex.h"
-#include "world.h"
+#include "FrameMovement.h"
+#include "Geometry.h"
+#include "HVertex.h"
+#include "Vertex.h"
+#include "Scene.h"
 
-namespace render_app {
+namespace Renderer3D {
 
 class Camera {
 public:
@@ -31,4 +31,4 @@ private:
     Eigen::Matrix4d transform_mat_;
     std::array<Plane, 6> clipping_planes_;
 };
-}  // namespace render_app
+}  // namespace Renderer3D

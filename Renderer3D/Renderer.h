@@ -1,9 +1,10 @@
 #pragma once
-#include "camera.h"
-#include "container2d.h"
-#include "world.h"
 
-namespace render_app {
+#include "Camera.h"
+#include "Container2D.h"
+#include "Scene.h"
+
+namespace Renderer3D {
 
 using Image = std::vector<sf::Vertex>;
 
@@ -29,4 +30,4 @@ private:
     void doScanlineIteration(size_t row, HVertex left, HVertex right, ZBuffer& z_buffer);
 };
 
-}  // namespace render_app
+}  // namespace Renderer3D

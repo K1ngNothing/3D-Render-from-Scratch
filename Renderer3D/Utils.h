@@ -1,11 +1,12 @@
 #pragma once
 
 #include <iostream>
+
 #include <SFML/Graphics.hpp>
 
-#include "geometry.h"
+#include "Geometry.h"
 
-namespace render_app {
+namespace Renderer3D {
 
 inline sf::Color& operator*=(sf::Color& color, double coeff) {
     color.r *= coeff;
@@ -46,4 +47,4 @@ inline std::ostream& operator<<(std::ostream& os, const Point4& point) {
     return os;
 }
 
-}  // namespace render_app
+}  // namespace Renderer3D

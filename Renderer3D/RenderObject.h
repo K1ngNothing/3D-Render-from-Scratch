@@ -2,9 +2,9 @@
 
 #include <vector>
 
-#include "vertex.h"
+#include "Vertex.h"
 
-namespace render_app {
+namespace Renderer3D {
 
 class Object {
 public:
@@ -16,4 +16,4 @@ private:
     std::vector<Triangle> triangles_;
 };
 
-}  // namespace render_app
+}  // namespace Renderer3D

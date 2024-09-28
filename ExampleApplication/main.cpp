@@ -1,9 +1,9 @@
-#include <application.h>
-#include <except.h>
+#include "Application.h"
+#include "Except.h"
 
 int main() {
     try {
-        render_app::Application app;
+        Renderer3D::Application app;
         app.run();
     } catch (...) {
         except::react();

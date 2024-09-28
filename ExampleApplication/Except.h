@@ -8,7 +8,7 @@ inline void react() {
     } catch (std::exception& e) {
         std::cerr << "Uncaught exception: " << e.what() << "\n";
     } catch (...) {
-        std::cerr << "Uncaught unknown exception\n";
+        std::cerr << "Uncaught non-standard exception\n";
     }
 }
 

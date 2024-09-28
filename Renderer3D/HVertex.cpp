@@ -1,9 +1,9 @@
-#include "hvertex.h"
+#include "HVertex.h"
 
-#include "settings.h"
-#include "utils.h"
+#include "Settings.h"
+#include "Utils.h"
 
-namespace render_app {
+namespace Renderer3D {
 
 HVertex::HVertex(const Point3& h_position, double z_reciprocal, const VertexAttributes& attr)
     : h_position_(h_position), z_reciprocal_(z_reciprocal), attr_(attr) {
@@ -65,4 +65,4 @@ void HTriangle::sortHVerticesByYCoordinate() {
     }
 }
 
-}  // namespace render_app
+}  // namespace Renderer3D

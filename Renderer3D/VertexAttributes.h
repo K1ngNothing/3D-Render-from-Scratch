@@ -2,10 +2,10 @@
 
 #include <optional>
 
-#include "texture_coords.h"
-#include "utils.h"
+#include "TextureCoords.h"
+#include "Utils.h"
 
-namespace render_app {
+namespace Renderer3D {
 struct VertexAttributes {
     std::optional<sf::Color> color;
     std::optional<TextureCoords> tcoords;
@@ -47,4 +47,4 @@ inline sf::Color VertexAttributes::getColor() const {
     return sf::Color::Black;
 }
 
-}  // namespace render_app
+}  // namespace Renderer3D

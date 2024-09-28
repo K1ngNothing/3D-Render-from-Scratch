@@ -1,6 +1,6 @@
-#include "world.h"
+#include "Scene.h"
 
-namespace render_app {
+namespace Renderer3D {
 
 // ----- Triangles -----
 
@@ -83,4 +83,4 @@ const sf::Image* World::getTexture(size_t id) const {
     return &textures_[id];
 }
 
-}  // namespace render_app
+}  // namespace Renderer3D

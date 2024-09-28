@@ -2,14 +2,14 @@
 
 #include <optional>
 
+#include <Camera.h>
+#include <Renderer.h>
+#include <Scene.h>
 #include <SFML/Graphics.hpp>
 
-#include "camera.h"
-#include "frame_movement.h"
-#include "renderer.h"
-#include "world.h"
+#include "FrameMovement.h"
 
-namespace render_app {
+namespace Renderer3D {
 
 class Application {
 public:
@@ -34,4 +34,4 @@ private:
     World world_;
 };
 
-}  // namespace render_app
+}  // namespace Renderer3D

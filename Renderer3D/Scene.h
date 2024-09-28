@@ -4,9 +4,9 @@
 #include <functional>
 #include <vector>
 
-#include "object.h"
+#include "RenderObject.h"
 
-namespace render_app {
+namespace Renderer3D {
 
 class World;
 
@@ -57,4 +57,4 @@ private:
     size_t triangle_count_ = 0;
 };
 
-}  // namespace render_app
+}  // namespace Renderer3D

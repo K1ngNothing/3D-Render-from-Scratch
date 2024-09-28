@@ -1,13 +1,15 @@
-#include "application.h"
+#include "Application.h"
 
-#include "scenes.h"
-#include "settings.h"
+#include "Scenes.h"
+#include "Settings.h"
 
-namespace render_app {
+namespace Renderer3D {
 
 Application::Application()
     : render_window_(
-          sf::VideoMode(settings::k_window_w, settings::k_window_h), settings::window_name) {
+          sf::VideoMode(settings::k_window_w, settings::k_window_h),
+          settings::window_name)
+{
     render_window_.setFramerateLimit(settings::k_framerate_limit);
     createScene();
 }
@@ -33,7 +35,10 @@ void Application::run() {
 }
 
 void Application::createScene() {
+    // Add some kind of setting for which scene to load?
+
     // world_.addObject(createGradientPyramid());
+    // world_.addObject(createObamaPyramid(world_));
     world_.addObject(createEgyptianPyramid(world_));
 }
 
@@ -122,4 +127,4 @@ void Application::closeWindowIfAsked() {
     }
 }
 
-}  // namespace render_app
+}  // namespace Renderer3D

@@ -1,10 +1,10 @@
-#include "renderer.h"
+#include "Renderer.h"
 
 #include <cassert>
 
-#include "settings.h"
+#include "Settings.h"
 
-namespace render_app {
+namespace Renderer3D {
 
 // Static members initialization
 const sf::Color Renderer::Pixel::k_background_color = sf::Color::Black;
@@ -117,4 +117,4 @@ void Renderer::doScanlineIteration(size_t row, HVertex left, HVertex right, ZBuf
     }
 }
 
-}  // namespace render_app
+}  // namespace Renderer3D

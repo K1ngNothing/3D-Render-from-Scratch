@@ -4,10 +4,10 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
-#include "geometry.h"
-#include "vertex_attributes.h"
+#include "Geometry.h"
+#include "VertexAttributes.h"
 
-namespace render_app {
+namespace Renderer3D {
 
 class HVertex {
 public:
@@ -45,4 +45,4 @@ private:
 
 std::ostream& operator<<(std::ostream& os, const HTriangle& h_triangle);
 
-}  // namespace render_app
+}  // namespace Renderer3D

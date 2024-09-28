@@ -3,13 +3,14 @@
 #include <array>
 #include <cassert>
 #include <iostream>
+
 #include <SFML/Graphics.hpp>
 
-#include "geometry.h"
-#include "utils.h"
-#include "vertex_attributes.h"
+#include "Geometry.h"
+#include "Utils.h"
+#include "VertexAttributes.h"
 
-namespace render_app {
+namespace Renderer3D {
 
 struct Vertex {
     Point3 pos;
@@ -48,4 +49,4 @@ inline std::ostream& operator<<(std::ostream& os, const Triangle& triangle) {
     return os;
 }
 
-}  // namespace render_app
+}  // namespace Renderer3D

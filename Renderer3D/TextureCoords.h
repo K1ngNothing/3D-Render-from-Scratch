@@ -2,9 +2,10 @@
 
 #include <cassert>
 #include <iostream>
+
 #include <SFML/Graphics/Image.hpp>
 
-namespace render_app {
+namespace Renderer3D {
 struct TextureCoords {
     double x;
     double y;
@@ -36,4 +37,4 @@ inline std::ostream& operator<<(std::ostream& os, const TextureCoords& tcoords) 
     return os << "(" << tcoords.x << ", " << tcoords.y << ")";
 }
 
-}  // namespace render_app
+}  // namespace Renderer3D

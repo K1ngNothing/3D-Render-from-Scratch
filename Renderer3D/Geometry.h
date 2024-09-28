@@ -2,7 +2,7 @@
 
 #include <Eigen/Dense>
 
-namespace render_app {
+namespace Renderer3D {
 
 constexpr double g_eps = 1e-9;
 
@@ -40,4 +40,4 @@ inline Side getSide(const Point3& point, const Plane& plane) {
     return point.dot(plane.head(3)) + plane.w() > -g_eps ? Side::Inner : Side::Outer;
 }
 
-}  // namespace render_app
+}  // namespace Renderer3D

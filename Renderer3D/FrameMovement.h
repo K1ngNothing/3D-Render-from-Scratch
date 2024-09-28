@@ -1,8 +1,8 @@
 #pragma once
 
-#include "geometry.h"
+#include "Geometry.h"
 
-namespace render_app {
+namespace Renderer3D {
 
 struct FrameMovement {
     Point3 shift;
@@ -20,4 +20,4 @@ FrameMovement emptyMovement();
 
 Matrix4 translateMovementToMatrix(const FrameMovement& movement);
 
-}  // namespace render_app
+}  // namespace Renderer3D

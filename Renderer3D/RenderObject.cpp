@@ -1,6 +1,6 @@
-#include "object.h"
+#include "RenderObject.h"
 
-namespace render_app {
+namespace Renderer3D {
 
 Object::Object(std::vector<Triangle>&& triangles, const Point3& position)
     : triangles_(std::move(triangles)) {
@@ -13,4 +13,4 @@ const std::vector<Triangle>& Object::triangles() const {
     return triangles_;
 }
 
-}  // namespace render_app
+}  // namespace Renderer3D

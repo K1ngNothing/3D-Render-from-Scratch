@@ -1,10 +1,10 @@
-#include "camera.h"
+#include "Camera.h"
 
 #include <cassert>
 
-#include "settings.h"
+#include "Settings.h"
 
-namespace render_app {
+namespace Renderer3D {
 
 namespace {
 Vertex intersectEdgeWithPlane(const Vertex& A, const Vertex& B, const Plane& plane) {
@@ -148,4 +148,4 @@ std::array<Plane, 6> Camera::constructClippingPlanes() const {
         Plane{                   0, -e / sqrt(e * e + a * a), -a / sqrt(e * e + a * a),  0}, // top
     };
 }
-}  // namespace render_app
+}  // namespace Renderer3D

@@ -1,10 +1,16 @@
-#include "scenes.h"
+#include "Scenes.h"
 
-namespace render_app {
+namespace Renderer3D {
+
+// TODO: setup proper variable in CMake
+const std::string k_path_to_textures = "../../../resources/textures/";
+
 namespace {
+
 Triangle createTriangleTextures(
-    const Point3& A, const Point3& B, const Point3& C, const TextureCoords& t1,
-    const TextureCoords& t2, const TextureCoords& t3) {
+    const Point3& A, const Point3& B, const Point3& C,
+    const TextureCoords& t1, const TextureCoords& t2, const TextureCoords& t3)
+{
     return Triangle{
         Vertex{.pos = A, .attr = VertexAttributes{.tcoords = t1}},
         Vertex{.pos = B, .attr = VertexAttributes{.tcoords = t2}},
@@ -13,8 +19,9 @@ Triangle createTriangleTextures(
 }
 
 Triangle createTriangleColors(
-    const Point3& A, const Point3& B, const Point3& C, const sf::Color& c1, const sf::Color& c2,
-    const sf::Color& c3) {
+    const Point3& A, const Point3& B, const Point3& C,
+    const sf::Color& c1, const sf::Color& c2, const sf::Color& c3)
+{
     return Triangle{
         Vertex{.pos = A, .attr = VertexAttributes{.color = c1}},
         Vertex{.pos = B, .attr = VertexAttributes{.color = c2}},
@@ -52,8 +59,7 @@ Object createObamaPyramid(World& world) {
     Point3 E{0, 2, -4};
 
     // path is relative to build folder
-    std::optional<size_t> texture_id =
-        world.loadTextureFromFile("../../resources/textures/obama.jpg");
+    std::optional<size_t> texture_id = world.loadTextureFromFile(k_path_to_textures + "obama.jpg");
     if (!texture_id) {
         throw std::runtime_error("Texture not found");
     }
@@ -71,8 +77,8 @@ Object createObamaPyramid(World& world) {
     // clang-format on
 
     auto createFaceTextures = [&obama_coords](
-                                  const Point3& A, const Point3& B, const Point3& C, size_t t1,
-                                  size_t t2, size_t t3) {
+                                  const Point3& A, const Point3& B, const Point3& C,
+                                  size_t t1, size_t t2, size_t t3) {
         return createTriangleTextures(
             A, B, C, obama_coords[t1], obama_coords[t2], obama_coords[t3]);
     };
@@ -98,8 +104,7 @@ Object createEgyptianPyramid(World& world) {
     Point3 E{0, 2, -4};
 
     // path is relative to build folder
-    std::optional<size_t> texture_id =
-        world.loadTextureFromFile("../../resources/textures/pyramid.jpg");
+    std::optional<size_t> texture_id = world.loadTextureFromFile(k_path_to_textures + "pyramid.jpg");
     if (!texture_id) {
         throw std::runtime_error("Texture not found");
     }
@@ -117,8 +122,8 @@ Object createEgyptianPyramid(World& world) {
     // clang-format on
 
     auto createFaceTextures = [&pyramid_coords](
-                                  const Point3& A, const Point3& B, const Point3& C, size_t t1,
-                                  size_t t2, size_t t3) {
+                                  const Point3& A, const Point3& B, const Point3& C,
+                                  size_t t1, size_t t2, size_t t3) {
         return createTriangleTextures(
             A, B, C, pyramid_coords[t1], pyramid_coords[t2], pyramid_coords[t3]);
     };
@@ -135,4 +140,4 @@ Object createEgyptianPyramid(World& world) {
     return Object{std::move(triangles)};
 }
 
-}  // namespace render_app
+}  // namespace Renderer3D

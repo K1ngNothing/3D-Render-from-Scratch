@@ -1,6 +1,6 @@
-#include "frame_movement.h"
+#include "FrameMovement.h"
 
-namespace render_app {
+namespace Renderer3D {
 
 FrameMovement FrameMovement::operator-() const {
     return FrameMovement{
@@ -55,4 +55,4 @@ Matrix4 translateMovementToMatrix(const FrameMovement& movement) {
     };
 }
 
-}  // namespace render_app
+}  // namespace Renderer3D

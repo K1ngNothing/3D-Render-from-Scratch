@@ -1,12 +1,11 @@
 #pragma once
 
-#include "world.h"
+#include <Scene.h>
 
-namespace render_app {
+namespace Renderer3D {
 
-// TODO: create objects from json or smth
 Object createObamaPyramid(World& world);
 Object createEgyptianPyramid(World& world);
 Object createGradientPyramid();
 
-}  // namespace render_app
+}  // namespace Renderer3D
